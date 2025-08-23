@@ -1,0 +1,419 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+    <link rel="stylesheet" href="./assets/styles/salesforce-lightning-design-system.css">
+</head>
+
+<body style="width : 500px;min-height : 600px;">
+    <header class="slds-grid slds-border_top slds-card">
+        <div class="slds-col slds-size_2-of-12 slds-grid slds-grid_align-center slds-grid_vertical-align-center">
+            <img src="./../images/icon-128.png" width="60" height="60" />
+        </div>
+        <div class="slds-col slds-grid slds-grid_vertical-align-center slds-size_8-of-12">
+            <div class="slds-form-element slds-col">
+                <div class="slds-form-element__control">
+                    <input type="text" id="search-input" placeholder="폴더나 오그를 입력해주세요..." label="검색" required=""
+                        class="slds-input" />
+                </div>
+            </div>
+        </div>
+        <!-- 폴더 추가 -->
+        <div class="slds-col slds-size_2-of-12 slds-grid slds-grid_align-center slds-grid_vertical-align-center"
+            id="header-folder-add" style="cursor: pointer;">
+            <svg class=" slds-icon_large slds-button__icon slds-button__icon_right" aria-hidden="true">
+                <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#add"></use>
+            </svg>
+        </div>
+    </header>
+    <main>
+        <div class="slds-card slds-p-around_medium" id="folders-container">
+            <ul class="slds-accordion">
+                <li class="slds-accordion__list-item slds-m-bottom_small" style="border : 1px solid black;">
+                    <section class="slds-accordion__section slds-is-open">
+                        <div class="slds-accordion__summary lds-theme_shade" style="background-color: #e5e5e5;">
+                            <h2 class="slds-accordion__summary-heading">
+                                <button class="slds-button slds-button_reset slds-accordion__summary-action"
+                                    aria-controls="referenceId-24" aria-expanded="true" title="Accordion summary">
+                                    <svg class="slds-accordion__summary-action-icon slds-button__icon slds-button__icon_left"
+                                        aria-hidden="true">
+                                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#switch">
+                                        </use>
+                                    </svg>
+                                    <span class="slds-accordion__summary-content">공용 오그 폴더</span>
+                                </button>
+                            </h2>
+                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                <button
+                                    class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small"
+                                    aria-haspopup="true" title="Show More">
+                                    <svg class="slds-button__icon" aria-hidden="true">
+                                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Show More</span>
+                                </button>
+                                <div class="slds-dropdown slds-dropdown_actions slds-dropdown_right">
+                                    <ul class="slds-dropdown__list" role="menu">
+                                        <li class="slds-dropdown__item" role="presentation">
+                                            <a href="#" role="menuitem" tabindex="0">
+                                                <span class="slds-truncate" title="Action One">Action One</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-accordion__content slds-grid  slds-m-top_small slds-is-open"
+                            id="referenceId-24" style="border-bottom : 1px solid rgba(128, 128, 128, 0.5);">
+                            <div class="slds-col slds-size_9-of-12">
+                                <p>차지비 샌박</p>
+                            </div>
+                            <div
+                                class="slds-col slds-size_1-of-12 slds-grid slds-grid_align-center slds-grid_vertical-align-center">
+                                <svg class="slds-button__icon" aria-hidden="true">
+                                    <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#logout"></use>
+                                </svg>
+                            </div>
+                            <div
+                                class="slds-col slds-size_1-of-12 slds-grid slds-grid_align-center slds-grid_vertical-align-center">
+                                <svg class="slds-button__icon" aria-hidden="true">
+                                    <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                </svg>
+                            </div>
+                            <div
+                                class="slds-col slds-size_1-of-12 slds-grid slds-grid_align-center slds-grid_vertical-align-center">
+                                <svg class="slds-button__icon" aria-hidden="true">
+                                    <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#delete"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="slds-accordion__content slds-grid  slds-m-top_small slds-is-open"
+                            id="referenceId-24" style="border-bottom : 1px solid rgba(128, 128, 128, 0.5);">
+                            <div class="slds-col slds-size_9-of-12">
+                                <p>티오더 운영</p>
+                            </div>
+                            <div
+                                class="slds-col slds-size_1-of-12 slds-grid slds-grid_align-center slds-grid_vertical-align-center">
+                                <svg class="slds-button__icon" aria-hidden="true">
+                                    <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#logout"></use>
+                                </svg>
+                            </div>
+                            <div
+                                class="slds-col slds-size_1-of-12 slds-grid slds-grid_align-center slds-grid_vertical-align-center">
+                                <svg class="slds-button__icon" aria-hidden="true">
+                                    <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                </svg>
+                            </div>
+                            <div
+                                class="slds-col slds-size_1-of-12 slds-grid slds-grid_align-center slds-grid_vertical-align-center">
+                                <svg class="slds-button__icon" aria-hidden="true">
+                                    <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#delete"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </section>
+                </li>
+                <li class="slds-accordion__list-item slds-m-bottom_small" style="border : 1px solid black;">
+                    <section class="slds-accordion__section slds-is-open">
+                        <div class="slds-accordion__summary lds-theme_shade" style="background-color: #e5e5e5;">
+                            <h2 class="slds-accordion__summary-heading">
+                                <button class="slds-button slds-button_reset slds-accordion__summary-action"
+                                    aria-controls="referenceId-24" aria-expanded="true" title="Accordion summary">
+                                    <svg class="slds-accordion__summary-action-icon slds-button__icon slds-button__icon_left"
+                                        aria-hidden="true">
+                                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#switch">
+                                        </use>
+                                    </svg>
+                                    <span class="slds-accordion__summary-content">공용 오그 폴더</span>
+                                </button>
+                            </h2>
+                            <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+                                <button
+                                    class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small"
+                                    aria-haspopup="true" title="Show More">
+                                    <svg class="slds-button__icon" aria-hidden="true">
+                                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                                    </svg>
+                                    <span class="slds-assistive-text">Show More</span>
+                                </button>
+                                <div class="slds-dropdown slds-dropdown_actions slds-dropdown_right">
+                                    <ul class="slds-dropdown__list" role="menu">
+                                        <li class="slds-dropdown__item" role="presentation">
+                                            <a href="#" role="menuitem" tabindex="0">
+                                                <span class="slds-truncate" title="Action One">Action One</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-accordion__content slds-grid  slds-m-top_small" id="referenceId-24"
+                            style="border-bottom : 1px solid rgba(128, 128, 128, 0.5);">
+                            <div class="slds-col slds-size_9-of-12">
+                                <p>차지비 샌박</p>
+                            </div>
+                            <div
+                                class="slds-col slds-size_1-of-12 slds-grid slds-grid_align-center slds-grid_vertical-align-center">
+                                <svg class="slds-button__icon" aria-hidden="true">
+                                    <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#logout"></use>
+                                </svg>
+                            </div>
+                            <div class="slds-col slds-size_1-of-12">
+                                <svg class="slds-button__icon" aria-hidden="true">
+                                    <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                </svg>
+                            </div>
+                            <div class="slds-col slds-size_1-of-12">
+                                <svg class="slds-button__icon" aria-hidden="true">
+                                    <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#delete"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </section>
+                </li>
+            </ul>
+            <!-- 폴더 추가 버튼 -->
+            <div style="text-align: center;">
+                <button class="slds-button slds-button_brand" id="ground-folder-add">
+                    폴더 추가
+                </button>
+            </div>
+        </div>
+        <!-- 폴더 모달 -->
+        <!-- slds-fade-in-open -->
+        <section id="forlder-edit-modal" role="dialog" tabindex="-1" aria-modal="true"
+            aria-labelledby="modal-heading-01" class="slds-modal slds-hidden slds-modal_small">
+            <div class="slds-modal__container">
+                <button class="slds-button slds-button_icon slds-modal__close" id="forlder-edit-modal-x">
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Cancel and close</span>
+                </button>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-form-element" id="folder-name-div">
+                        <label class="slds-form-element__label" for="text-input-id-47">
+                            <abbr class="slds-required" title="required">* </abbr>폴더 이름</label>
+                        <div class="slds-form-element__control" id="folder-name-form">
+                            <input type="text" id="folder-name" placeholder="폴더 이름" required="" class="slds-input" />
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <button id="folder-modal-close-button" class="slds-button slds-button_neutral"
+                        aria-label="Cancel and close">취소</button>
+                    <button id="folder-modal-add-button" class="slds-button slds-button_brand">저장</button>
+                </div>
+            </div>
+        </section>
+        <!-- slds-backdrop_open -->
+        <div id="folder-edit-backdrop" class="slds-backdrop" role="presentation"></div>
+        <!-- 오그 추가 모달-->
+        <!-- slds-fade-in-open -->
+        <section id="org-modal" role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+            class="slds-modal slds-modal_small" hidden="true">
+            <div class="slds-modal__container">
+                <button id="org-modal-x" class="slds-button slds-button_icon slds-modal__close">
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Cancel and close</span>
+                </button>
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate" tabindex="-1">오그 추가</h1>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <!-- 오그 이름 -->
+                    <div class="slds-form-element" id="org-name-div">
+                        <label class="slds-form-element__label" for="text-input-id-47">
+                            <abbr class="slds-required" title="required">* </abbr>오그 이름</label>
+                        <div class="slds-form-element__control" id="org-name-form">
+                            <input type="text" id="org-name" placeholder="오그 이름" required="오그 이름을 입력해주세요."
+                                class="slds-input" />
+                        </div>
+                    </div>
+                    <!-- URL -->
+                    <div class="slds-form-element" id="org-type-dropdown">
+                        <label class="slds-form-element__label" for="combobox-id-58" id="combobox-label-id-130">오그 유형
+                            선택</label>
+                        <div class="slds-form-element__control" id="org-type-form">
+                            <div class="slds-combobox_container">
+                                <!-- slds-is-open -->
+                                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click"
+                                    id="combobox-div">
+                                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                                        role="none">
+                                        <div role="combobox" tabindex="0" class="slds-input_faux slds-combobox__input"
+                                            aria-labelledby="combobox-label-id-130" id="combobox-id-58-selected-value"
+                                            aria-controls="listbox-id-28" aria-expanded="false" aria-haspopup="listbox">
+                                            <span class="slds-truncate" id="org-type-value">선택해주세요.</span>
+                                        </div>
+                                        <span
+                                            class="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right">
+                                            <svg class="slds-icon slds-icon slds-icon_x-small slds-icon-text-default"
+                                                aria-hidden="true">
+                                                <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#down">
+                                                </use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox"
+                                        aria-label="{{Placeholder for Dropdown Items}}" tabindex="0" aria-busy="false">
+                                        <ul id="org-type-ul" class="slds-listbox slds-listbox_vertical"
+                                            role="presentation">
+                                            <li role="presentation" class="slds-listbox__item">
+                                                <div id="option716"
+                                                    class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                    role="option">
+                                                    <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                                    <span class="slds-media__body">
+                                                        <span class="slds-truncate" data-value="production"
+                                                            title="Accounts">운영</span>
+                                                    </span>
+                                                </div>
+                                            </li>
+                                            <li role="presentation" class="slds-listbox__item">
+                                                <div id="option717"
+                                                    class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                    role="option">
+                                                    <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                                    <span class="slds-media__body">
+                                                        <span class="slds-truncate" data-value="sandbox"
+                                                            title="Reports">샌드박스</span>
+                                                    </span>
+                                                </div>
+                                            </li>
+                                            <li role="presentation" class="slds-listbox__item">
+                                                <div id="option718"
+                                                    class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                    role="option">
+                                                    <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                                    <span class="slds-media__body">
+                                                        <span class="slds-truncate" data-value="developer"
+                                                            title="Contacts">데브</span>
+                                                    </span>
+                                                </div>
+                                            </li>
+                                            <li role="presentation" class="slds-listbox__item">
+                                                <div id="option718"
+                                                    class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                    role="option">
+                                                    <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                                    <span class="slds-media__body">
+                                                        <span class="slds-truncate" data-value="SDO"
+                                                            title="Contacts">SDO</span>
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- UserName -->
+                    <div class="slds-form-element" id="user-name-div">
+                        <label class="slds-form-element__label" for="text-input-id-47">
+                            <abbr class="slds-required" title="required">* </abbr>사용자 이름</label>
+                        <div class="slds-form-element__control" id="user-name-form">
+                            <input type="text" id="org-username" placeholder="사용자 이름" required="" class="slds-input" />
+                        </div>
+                    </div>
+                    <!-- Password -->
+                    <div class="slds-form-element" id="password-div">
+                        <label class="slds-form-element__label" for="text-input-id-47">
+                            <abbr class="slds-required" title="required">* </abbr>비밀번호</label>
+                        <div class="slds-form-element__control" id="password-form">
+                            <input type="text" id="password" placeholder="비밀번호" required="" class="slds-input" />
+                        </div>
+                    </div>
+                    <!-- Description -->
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="text-input-id-47">
+                            설명</label>
+                        <div class="slds-form-element__control">
+                            <input type="text" id="org-description" placeholder="설명" required="" class="slds-input" />
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-modal__footer">
+                    <button id="org-modal-close-button" class="slds-button slds-button_neutral"
+                        aria-label="Cancel and close">취소</button>
+                    <button id="org-modal-save-button" class="slds-button slds-button_brand">저장</button>
+                </div>
+            </div>
+        </section>
+        <div id="add-org-backdrop" class="slds-backdrop" role="presentation"></div>
+        <section id="org-delete-cofirm-modal" role="dialog" tabindex="-1" aria-modal="true"
+            aria-labelledby="modal-heading-01" class="slds-modal slds-hidden slds-modal_small">
+            <div class="slds-modal__container">
+                <button class="slds-button slds-button_icon slds-modal__close" id="org-delete-x">
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Cancel and close</span>
+                </button>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <h1>오그 정보를 삭제하시겠습니까?</h1>
+                </div>
+                <div class="slds-modal__footer">
+                    <button id="org-delete-cancle" class="slds-button slds-button_neutral"
+                        aria-label="Cancel and close">취소</button>
+                    <button id="org-delete-fonfirm" class="slds-button slds-button_brand">삭제</button>
+                </div>
+            </div>
+        </section>
+        <!-- 폴더 삭제 모달 -->
+        <section id="folder-delete-cofirm-modal" role="dialog" tabindex="-1" aria-modal="true"
+            aria-labelledby="modal-heading-01" class="slds-modal slds-hidden slds-modal_small">
+            <div class="slds-modal__container">
+                <button class="slds-button slds-button_icon slds-modal__close" id="folder-delete-x">
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Cancel and close</span>
+                </button>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <h1>폴더를 정말로 삭제 하시겠습니까?<br />모든 오그 정보가 삭제됩니다.</h1>
+                </div>
+                <div class="slds-modal__footer">
+                    <button id="folder-delete-cancle" class="slds-button slds-button_neutral"
+                        aria-label="Cancel and close">취소</button>
+                    <button id="folder-delete-confirm" class="slds-button slds-button_brand">삭제</button>
+                </div>
+            </div>
+        </section>
+        <!-- slds-backdrop_open -->
+        <div id="folder-delete-backdrop" class="slds-backdrop" role="presentation"></div>
+
+        <!-- <div id="folderList"> -->
+
+        <!-- </div> -->
+        <!-- <button id="addOrgButton">오그 추가</button> -->
+        <!-- <a id="openLink" 
+            href="https://login.salesforce.com?correct=true"
+            target="_blank">
+            오그 추가(새 탭)
+            </a> -->
+    </main>
+</body>
+<style>
+    .drag-over {
+        background: #fff8dc !important;
+        border: 2px dashed #f5b400 !important;
+        transition: background 0.15s;
+    }
+
+    .search-hit {
+        background: #fff8dc !important;
+        /* 노란색 하이라이트 (inline 배경색도 덮어씀) */
+        transition: background 0.15s;
+    }
+</style>
+
+<script src="popup.js" type="module"></script>
+<!-- <script src="../tailwind.js" type="module"></script> -->
+<!-- <script src="../fontAwesome.js" type="module"></script> -->
+
+</html>
