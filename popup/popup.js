@@ -38,40 +38,13 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const XLINK_NS = "http://www.w3.org/1999/xlink";
 let targetOrgId;
 let targetFolderId;
+
 document.addEventListener("DOMContentLoaded", init);
-chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-   console.log('tabs :: '+JSON.stringify(tabs));
-  const tabId = tabs[0].id;
-
-  // content_script.js 동적 주입
-  chrome.scripting.executeScript(
-    {
-      target: { tabId: tabId },
-      files: ['home.js'],
-    },
-    () => {
-      // 주입 완료 후 메시지 전달
-      chrome.tabs.sendMessage(tabId, { action: "initData", data: "전달할 데이터" }, (response) => {
-        console.log("content_script 응답:", response);
-      });
-    }
-  );
-});
-
-async function init() {
+async function init() { 
     //   chrome.storage.sync.clear(() => {
     //     console.log('확장 프로그램 로컬 스토리지 삭제 완료');
     //   });
-    //   const folder = {
-    //     Id: 'Id',
-    //     Name: 'TestFolder',
-    //     ORGs: []
-    //   };
-    //   await setStorage(folder.Id, folder);
-    
-    
-    console.log("popup.js run");
-    const foldersContainer = document.querySelector('#folders-container');    
+        const foldersContainer = document.querySelector('#folders-container');    
     const sectionFolderModal = document.querySelector('#forlder-edit-modal');
     const buttonFolderEditModalX = sectionFolderModal.querySelector('#forlder-edit-modal-x');
     const buttonFolderCloseButton =  sectionFolderModal.querySelector('#folder-modal-close-button');
@@ -110,20 +83,16 @@ async function init() {
 }
 let folderSize = null;
 async function renderFolderList() {
-    console.log('renderFolderList run');
     // 로컬 스토리지에서 모든 데이터 싹 가져와야 됨
     const folders = Object.values(await getStorage(null));
     folderSize = folders.length-1;
     folders.sort((a, b) => a.SortNumber - b.SortNumber);
     const accordionUl = document.getElementById("folders-container").querySelector('ul.slds-accordion');
     accordionUl.innerHTML = "";
-    console.log('folders :: ');
-    console.log(folders);
     for(const folder of folders || []){
         const li = createDom('li',['slds-accordion__list-item','slds-m-bottom_small'],{border : '1px solid black'},{ draggable: true } );
         li.addEventListener('dragstart',onFolderDragStart);
         li.addEventListener('dragover',onFolderDragOver);
-        li.addEventListener('dragleave',onFolderDragLeave);
         li.addEventListener('drop',onFolderDrop);
         li.addEventListener('dragend', onFolderDragEnd);
         // slds-is-open
@@ -257,28 +226,18 @@ async function renderFolderList() {
   }
   let draggingFolderDragId = null;
   function onFolderDragStart(event){
-    console.log('onFolderDragStart run');
     event.dataTransfer.effectAllowed = 'move'; // 해당 코드 있어야 드래그 작동
-    console.log(event.currentTarget.querySelector('section'));
     draggingFolderDragId = event.currentTarget.querySelector('section').dataset.folderId;
-    console.log('draggingFolderDragId :: '+draggingFolderDragId);
-
   }
   let lastDragOverFolder = null;
   function onFolderDragOver(event){
-    if(draggingOrgId) return;
+    if(!draggingFolderDragId) return;
     event.preventDefault();
     if(lastDragOverFolder && lastDragOverFolder !== event.currentTarget){
         lastDragOverFolder.classList.remove('drag-over');
     }
     event.currentTarget.classList.add('drag-over');
     lastDragOverFolder = event.currentTarget;
-  }
-  function onFolderDragLeave(event){
-    console.log('onFolderDragLeave run');
-    // lastDragOverFolder = null;
-    // draggingFolderDragId = null;
-
   }
   // 구현
 function onFolderDragEnd(){
@@ -289,24 +248,17 @@ function onFolderDragEnd(){
     draggingFolderDragId = null;
   }
   async function onFolderDrop(event){
-    console.log('onFolderDrop run');
-    if (draggingOrgId) return;   
+    if(!draggingFolderDragId) return; 
     event.preventDefault();
     const targetFolderDom = event.currentTarget;
-    console.log('event.currentTarget.querySelector()');
-    console.log(event.currentTarget.querySelector('section'));
     const targetFolderId = event.currentTarget.querySelector('section').dataset.folderId;
     const sourceFolderId = draggingFolderDragId;   // ★ 스냅샷(이 값만 사용)
     if(targetFolderDom){
         targetFolderDom.classList.remove('drag-over');
     }
-    console.log('targetFolderId :: '+targetFolderId);
-    console.log('sourceFolderId '+sourceFolderId);
     if(sourceFolderId !== targetFolderId){
         const dragFolder = (await getStorage(sourceFolderId))[sourceFolderId];   
         const targetFolder = (await getStorage(targetFolderId))[targetFolderId];
-        console.log(dragFolder);
-        console.log(targetFolder);
         const dragFolderSortNumber = dragFolder.SortNumber;
         const targetFolderSortNumber = targetFolder.SortNumber;
         dragFolder.SortNumber = targetFolderSortNumber;
@@ -314,18 +266,14 @@ function onFolderDragEnd(){
         await setStorage(dragFolder.Id, dragFolder);
         await setStorage(targetFolder.Id, targetFolder);
     }    
-    // drag 시작한 folder랑 내려놓은 folder가 필요함
-    console.log(targetFolderDom);
     if(lastDragOverFolder){
         lastDragOverFolder = null;
     }
     renderFolderList();
-
   }
 
   let deleteFolderId = null;
   function onClickDropDownFolderDelete(event){
-    console.log('onClickDropDownFolderDelete run');
     // 폴더 삭제 모달 활성화
     const rootSection = event.currentTarget.closest('.slds-accordion__section');
     deleteFolderId = rootSection.dataset.folderId;
@@ -336,7 +284,6 @@ function onFolderDragEnd(){
     divEditBackdrop.classList.add('slds-backdrop_open');
   }
   function onClickFolderDeleteModalCancel(event){
-    console.log('onClickFolderDeleteModalCancel run');
     deleteFolderId = null;
     const orgDeleteConfirmModal = document.querySelector('#folder-delete-cofirm-modal');
     orgDeleteConfirmModal.classList.remove('slds-fade-in-open');
@@ -345,7 +292,6 @@ function onFolderDragEnd(){
     divEditBackdrop.classList.remove('slds-backdrop_open');
   }
   function onClickFolderDeleteModalX(event){
-    console.log('onClickFolderDeleteModalX run');
     const orgDeleteConfirmModal = document.querySelector('#folder-delete-cofirm-modal');
     orgDeleteConfirmModal.classList.remove('slds-fade-in-open');
     orgDeleteConfirmModal.classList.add('slds-hidden');
@@ -353,10 +299,6 @@ function onFolderDragEnd(){
     divEditBackdrop.classList.remove('slds-backdrop_open');
   }
   async function onClickFolderDeleteModalDelete(event){
-    console.log('onClickFolderDeleteModalDelete run');
-    // folderId로 찾음
-    // const folder = (await getStorage(deleteFolderId))[deleteFolderId];
-    // 해당 folder를 삭제함
     await deleteStorage(deleteFolderId);
     const orgDeleteConfirmModal = document.querySelector('#folder-delete-cofirm-modal');
     orgDeleteConfirmModal.classList.remove('slds-fade-in-open');
@@ -367,39 +309,24 @@ function onFolderDragEnd(){
   }
 
   function onClickSectionIconOnly(event) {
-    console.log('onClickSectionIconOnly run');
-    event.stopPropagation(); // 상위로 이벤트 안 올림(권장)
-    // 아이콘(svg.slds-accordion__summary-action-icon) 이 아니면 아무 것도 안 함
-    // if (!event.target.closest('svg.slds-accordion__summary-action-icon')) return;
-    console.log('작동 하냐?');
+    event.stopPropagation(); ;
     const section = event.currentTarget.closest('.slds-accordion__section');
     const nowOpen = !section.classList.contains('slds-is-open');
     section.classList.toggle('slds-is-open', nowOpen);
-  
-    // 접근성 업데이트(권장)
+
     event.currentTarget.setAttribute('aria-expanded', String(nowOpen));
   }
 let draggingOrgId = null; // 현재 드래그중인 ORG id
 let draggingFolderId = null; // 현재 드래그중인 Folder id
 
 function onOrgDragStart(event) {
-    console.log('onOrgDragStart run');
-    // orgRow.dataset.orgId = ORG.Id;
-    event.dataTransfer.effectAllowed = 'move'; // 해당 코드 있어야 드래그 작동
-    // move 적용 완료
-    // event.currentTarget.style.opacity = '0.4';
+    event.dataTransfer.effectAllowed = 'move';
     draggingOrgId = event.currentTarget.closest('.org-row').dataset.orgId;
     draggingFolderId = event.currentTarget.closest('section.slds-accordion__section').dataset.folderId;
-    console.log('draggingOrgId :: '+draggingOrgId);
-    console.log('draggingFolderId :: '+draggingFolderId);
-    // 시각적 효과
-    // section.currentTarget.style.opacity = '0.4';
 }
 
 let lastDragOverOrgRow = null;
 function onOrgDragOver(event) {
-    console.log('onOrgDragOver run');
-    console.log(draggingOrgId);
     if (!draggingOrgId) return;       
     // 내가 끌고 온 폴더와, 지금 올라간(hover) 행의 폴더가 같은지 확인
   const hoveredSection = event.currentTarget.closest('section.slds-accordion__section');
@@ -424,13 +351,6 @@ function onOrgDragOver(event) {
     orgRow.classList.add('drag-over');
     lastDragOverOrgRow = orgRow;
 }
-// function onOrgDragEnter(event) {
-//     console.log('onOrgDragEnter run');
-//     const divOrg = event.currentTarget.closest('.org-row');
-//     if(divOrg) {
-//         divOrg.classList.add('drag-over');
-//     }
-// }
 function onOrgDragLeave(event) {
     // 드래그가 정말 orgRow 바깥으로 나갈 때만 제거
     const orgRow = event.currentTarget.closest('.org-row');
@@ -439,49 +359,24 @@ function onOrgDragLeave(event) {
         orgRow.classList.remove('drag-over');
         lastDragOverOrgRow = null;
     }
-    // lastDragOverOrgRow = null;
-    // draggingFolderId = null;
-    // draggingOrgId = null;
 }
 async function onOrgDrop(event) {
     if (!draggingOrgId) return;       
-    console.log('hi');
     event.preventDefault();
     event.stopPropagation(); 
-    console.log('event.currentTarget');
-    console.log(event.currentTarget);
-    console.log('event.currentTarget.dataset.orgId :: '+event.currentTarget.dataset.orgId);
-    
     const folderId = event.currentTarget.closest('section').dataset.folderId;
-    console.log('return 직전');
     if (folderId !== draggingFolderId) return; // ← 이 경우도 드래그 상태는 해제되어야 함
-    console.log('return 탈출');
     const cloneDraggingOrgId = draggingOrgId;
     const cloneTargetOrgId = event.currentTarget.dataset.orgId;
     const folder = (await getStorage(folderId))[folderId];
     const orgs = folder.ORGs;    
     const fromIdx = orgs.findIndex(o => o.Id === cloneDraggingOrgId);   // 끌던 org
     const toIdx   = orgs.findIndex(o => o.Id === cloneTargetOrgId);     // 놓인 자리의 org
-    console.log('fromIdx :: '+fromIdx);
-    console.log('toIdx :: '+toIdx);
-    console.log('두번째 직전');
     if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return; // ← 여기서도 바로 return되면 상태가 안 풀림
-    console.log('두번째 직후');
     const [moved] = orgs.splice(fromIdx, 1);
     orgs.splice(toIdx, 0, moved);
     await setStorage(folderId, folder);
     renderFolderList();
-    
-        // // 항상 실행: 하이라이트/플래그 정리
-        // const row = event.currentTarget.closest('.org-row');
-        // row && row.classList.remove('drag-over');
-        // if (lastDragOverOrgRow) {
-        //   lastDragOverOrgRow.classList.remove('drag-over');
-        //   lastDragOverOrgRow = null;
-        // }
-        // draggingOrgId = null;
-        // draggingFolderId = null;
-      
 }
 
 function onOrgDragEnd(event) {
@@ -493,36 +388,30 @@ function onOrgDragEnd(event) {
       draggingFolderId = null;
 }
 async function onClickOrgDeleteCancle(event){
-    console.log('onClickOrgDeleteCancle run');
-    // 모달을 꺼버릴것
     const orgDeleteFonfirmSection =event.currentTarget.closest('#org-delete-cofirm-modal');
-    const divEditBackdrop = document.querySelector('#org-delete-backdrom');
+    const divEditBackdrop = document.querySelector('#org-delete-backdrop');
     orgDeleteFonfirmSection.classList.add('slds-hidden');
     orgDeleteFonfirmSection.classList.remove('slds-fade-in-open');
     divEditBackdrop.classList.remove('slds-backdrop_open');
 }
 async function onClickOrgDeleteConfirm(event){
-    console.log('onClickOrgDeleteConfirm run');
-    console.log('folderId :: '+targetFolderId);
-    console.log('orgId :: '+targetOrgId);
     const folder = (await getStorage(targetFolderId))[targetFolderId];
     folder.ORGs = folder.ORGs.filter(org => org.Id !== targetOrgId);
     await setStorage(targetFolderId,folder);
     const orgDeleteFonfirmSection = document.querySelector('#org-delete-cofirm-modal');
-    const divEditBackdrop = document.querySelector('#org-delete-backdrom');
+    const divEditBackdrop = document.querySelector('#org-delete-backdrop');
     orgDeleteFonfirmSection.classList.add('slds-hidden');
     orgDeleteFonfirmSection.classList.remove('slds-fade-in-open');
     divEditBackdrop.classList.remove('slds-backdrop_open');
     renderFolderList();
 }
   async function onClickOrgDelete(event){
-    console.log('onClickOrgDelete run');
     // modal open
     const orgDeleteConfirmModal = document.querySelector('#org-delete-cofirm-modal');
     orgDeleteConfirmModal.classList.remove('slds-hidden');
     orgDeleteConfirmModal.classList.add('slds-fade-in-open');
     // backDrop open
-    const divOrgModalBackdrop = document.querySelector('#org-delete-backdrom');
+    const divOrgModalBackdrop = document.querySelector('#org-delete-backdrop');
     divOrgModalBackdrop.classList.add('slds-backdrop_open');
     //  // 1. orgLink(=currentTarget)에서 가장 가까운 section 찾기
      const section = event.currentTarget.closest('section.slds-accordion__section');
@@ -534,7 +423,6 @@ async function onClickOrgDeleteConfirm(event){
      targetOrgId = orgId;
   }
   async function onClickOrgEdit(event){
-    console.log('onClickOrgEdit run');
     const section = event.currentTarget.closest('section.slds-accordion__section');
     // 2. folderId 읽기
     const folderId = section ? section.dataset.folderId : null;
@@ -542,11 +430,7 @@ async function onClickOrgDeleteConfirm(event){
     const orgId = orgRow.dataset.orgId;
     targetOrgId = orgId;
     targetFolderId = folderId;
-    console.log('folderId :: '+folderId);
-    console.log('orgId :: '+orgId);
     const folder = (await getStorage(folderId))[folderId];
-    console.log('folder :: ');
-    console.log(folder);
     let targetOrg = {};
     for(const tempOrg of folder.ORGs){
         if(tempOrg.Id == orgId){
@@ -554,12 +438,9 @@ async function onClickOrgDeleteConfirm(event){
             break;
         }
     }
-    console.log('targetOrg :: ');
-    console.log(targetOrg);
     const sectionOrgModal = document.querySelector('#org-modal');
     // 그 안에서 텍스트 span 찾아서 값 가져오기
     sectionOrgModal.dataset.folderId = folderId;
-    console.log('sectionModal.dataset.folderId :: '+sectionOrgModal.dataset.folderId);
     sectionOrgModal.querySelector('#org-name').value = targetOrg.Name;
     sectionOrgModal.querySelector('#org-type-value').dataset.value = targetOrg.OrgType;
     sectionOrgModal.querySelector('#org-type-value').textContent = targetOrg.OrgType;
@@ -578,7 +459,6 @@ function onClickOrgRow(event){
 }
 function onClickSection(event){
     event.stopPropagation();
-    console.log('onClickSection run');
     const target = event.currentTarget.closest('.slds-accordion__section');
     if (target.classList.contains('slds-is-open')) {
         target.classList.remove('slds-is-open');
@@ -588,7 +468,6 @@ function onClickSection(event){
 }
 function onClickDropDownDiv(event){
     event.stopPropagation();
-    console.log('onClickDropDownDiv run');
     const target = event.currentTarget;
     if(target.classList.contains('slds-is-open')){
         target.classList.remove('slds-is-open');
@@ -597,18 +476,13 @@ function onClickDropDownDiv(event){
     }
 }
 function onClickDropDownEdit(event){
-    // event.stopPropagation();
-    console.log('onClickDropDownEdit run');
     const rootSection = event.currentTarget.closest('.slds-accordion__section');
-    console.log(rootSection);
     const folderId = rootSection.dataset.folderId;
     // 그 안에서 텍스트 span 찾아서 값 가져오기
     const summarySpan = rootSection.querySelector('.slds-accordion__summary-content');
     const folderName = summarySpan?.textContent?.trim();
     const sectionModal = document.querySelector('#forlder-edit-modal');
     sectionModal.dataset.folderId = folderId;
-    console.log('sectionModal.dataset.folderId');
-    console.log(sectionModal.dataset.folderId);
     const inputFolderName = sectionModal.querySelector('#folder-name');
     // input에 folder set
     if(folderName) inputFolderName.value = folderName; 
@@ -631,31 +505,25 @@ function onClickFolderModalX(event){
     divEditBackdrop.classList.remove('slds-backdrop_open');
 }
 function onClickFolderModalClose(event){
-    console.log('onClickFolderModalClose run');
-    console.log(event.currentTarget);
     const section = event.currentTarget.closest('#forlder-edit-modal');
     const divEditBackdrop = document.querySelector('#folder-edit-backdrop');
     const folderName = document.querySelector('#folder-name');
     folderName.value = null;
     section.querySelectorAll('.slds-has-error').forEach(el => el.classList.remove('slds-has-error'));
     section.querySelectorAll('.slds-form-element__help').forEach(el => el.remove());
-    console.log('folderName.value :: '+folderName.value);
     section.classList.add('slds-hidden');
     section.classList.remove('slds-fade-in-open');
     divEditBackdrop.classList.remove('slds-backdrop_open');
 }
 async function onClickFolderSave(event){
-    console.log('onClickFolderAdd run');
     // folder-modal-add-button
     const section = event.currentTarget.closest('#forlder-edit-modal');
     const divEditBackdrop = document.querySelector('#folder-edit-backdrop');
     const folderModal = event.currentTarget.closest('#forlder-edit-modal');    
     const folderId = folderModal.dataset.folderId;
     const inputValue = folderModal.querySelector('input').value;
-    console.log('inputValue :: '+inputValue);
     let isRequired = false;
     if(inputValue == undefined || inputValue == null || inputValue ==''){
-        console.log('조건 맞음')
         if(!isRequired) isRequired = true;
         const folderNameDiv = document.querySelector('#folder-name-form');
         if(!folderNameDiv.classList.contains('slds-has-error')){
@@ -673,7 +541,6 @@ async function onClickFolderSave(event){
             folderNameForm.querySelector('.slds-form-element__help').remove();
         }
     }
-    console.log(isRequired);
     if(isRequired) return;
     folderModal.querySelectorAll('.slds-has-error').forEach(el => el.classList.remove('slds-has-error'));
     folderModal.querySelectorAll('.slds-form-element__help').forEach(el => el.remove());
@@ -708,8 +575,6 @@ async function onClickFolderSave(event){
     
 }
 function onClickGroundFolderAdd(event){
-    console.log('onClickGroundFolderAdd run');
-    console.log(event.currentTarget);
     const section = document.querySelector('#forlder-edit-modal');
     // section.querySelector('#folder-name').value = null;
     // modal open
@@ -721,16 +586,12 @@ function onClickGroundFolderAdd(event){
 
 }
 function onClickDropDownOrgAdd(event){
-    // event.stopPropagation();
-    console.log('onClickDropDownOrgAdds run');
     const sectionOrgModal = document.querySelector('#org-modal');
     const rootSection = event.currentTarget.closest('.slds-accordion__section');
-    console.log(rootSection);
     const folderId = rootSection.dataset.folderId;
     // 그 안에서 텍스트 span 찾아서 값 가져오기
     const sectionModal = document.querySelector('#org-modal');
     sectionModal.dataset.folderId = folderId;
-    console.log('sectionModal.dataset.folderId :: '+sectionModal.dataset.folderId);
     // modal open
     sectionOrgModal.classList.remove('slds-hidden');
     sectionOrgModal.classList.add('slds-fade-in-open');
@@ -739,39 +600,24 @@ function onClickDropDownOrgAdd(event){
     divOrgModalBackdrop.classList.add('slds-backdrop_open');
 }
 function onClickOrgTypeDropdown(event){
-    console.log('onClickOrgTypeDropdown run');
     const divCombobox = event.currentTarget.querySelector('.slds-combobox');
     if(divCombobox.classList.contains('slds-is-open')){
-        console.log('제거');
         divCombobox.classList.remove('slds-is-open');
-        console.log('after divCombobox');
-        console.log(divCombobox);
     }else{
-        console.log('추가');
         divCombobox.classList.add('slds-is-open');
     }
 }
 function onClickUlOrgType(event){
     event.stopPropagation();
-    console.log('onClickUlOrgType run');
     const span = event.target;
     const orgTypeValue = document.querySelector('#org-type-value');
-    console.log('orgTypeValue');
-    console.log(orgTypeValue);
     orgTypeValue.textContent = span.textContent.trim();
-    console.log('span.textContent.trim()');
-    console.log(span.textContent.trim());
-    console.log('span.dataset.value');
-    console.log(span.dataset.value);
     orgTypeValue.dataset.value = span.textContent.trim();
     const divOrgTypeCombobox = document.querySelector('#org-type-dropdown .slds-combobox');
     divOrgTypeCombobox.classList.remove('slds-is-open');
 
 }
 function onClickButtonOrgModalX(event){
-    console.log('onClickButtonOrgModalX run');
-    console.log('event.currentTarget');
-    console.log(event.currentTarget);
     const divOrgModal =event.currentTarget.closest('#org-modal');
     const divOrgBackdrop = document.querySelector('#add-org-backdrop');        
     const sectionOrgModal = event.currentTarget.closest('#org-modal');    
@@ -789,8 +635,6 @@ function onClickButtonOrgModalX(event){
     divOrgBackdrop.classList.remove('slds-backdrop_open');
 }
 function onClickButtonOrgModalClose(event){
-    console.log('onClickButtonOrgModalClose run');
-    console.log(event.currentTarget);
     const sectionOrgModal = event.currentTarget.closest('#org-modal');    
     sectionOrgModal.querySelector('#org-name').value = null;
     sectionOrgModal.querySelector('#org-type-value').dataset.value = null;
@@ -811,17 +655,16 @@ async function onClickOrgModalSave(event){
     console.log('onClickOrgModalSave run');
     const sectionOrgModal = event.currentTarget.closest('#org-modal');    
     const folderId = sectionOrgModal.dataset.folderId;
+    console.log('folderId :: '+folderId);
     const folder = (await getStorage(folderId))[folderId];
+    console.log('folder');
+    console.log(JSON.stringify(folder));
     const orgName = sectionOrgModal.querySelector('#org-name').value;
     const orgType = sectionOrgModal.querySelector('#org-type-value').dataset.value;
     const userName = sectionOrgModal.querySelector('#org-username').value;
     const password = sectionOrgModal.querySelector('#password').value;
     const description = sectionOrgModal.querySelector('#org-description').value;
     let isRequired = false;
-    console.log('orgName :: '+orgName);
-    console.log('orgType :: '+orgType);
-    console.log('userName :: '+userName);
-    console.log('password :: '+password);
     if(orgName == undefined || orgName == null || orgName ==''){
         const orgNameDiv = document.querySelector('#org-name-div');
         if(!orgNameDiv.classList.contains('slds-has-error')){
@@ -837,12 +680,10 @@ async function onClickOrgModalSave(event){
         const orgNameForm = document.querySelector('#org-name-form');
         if(orgNameDiv.classList.contains('slds-has-error')){
             orgNameDiv.classList.remove('slds-has-error');
-            console.log(orgNameForm.querySelector('.slds-form-element__help'));
             orgNameForm.querySelector('.slds-form-element__help').remove();
         }
     }
     if(orgType == undefined || orgType == null || orgType == ''){
-        console.log('orgType 걸림');
         if(!isRequired) isRequired = true;
         const orgTypeDiv = document.querySelector('#combobox-div');
         if(!orgTypeDiv.classList.contains('slds-has-error')){
@@ -861,7 +702,6 @@ async function onClickOrgModalSave(event){
         }
     }
     if(userName == undefined || userName == null || userName ==''){
-        console.log('userName 걸림');
         if(!isRequired) isRequired = true;
         const userNameDiv = document.querySelector('#user-name-div');
         if(!userNameDiv.classList.contains('slds-has-error')){
@@ -880,7 +720,6 @@ async function onClickOrgModalSave(event){
         }
     }
     if(password == undefined || password == null || password == ''){
-        console.log('password 걸림');
         if(!isRequired) isRequired = true;
         const passwordDiv = document.querySelector('#password-div');
         if(!passwordDiv.classList.contains('slds-has-error')){
@@ -902,33 +741,21 @@ async function onClickOrgModalSave(event){
     sectionOrgModal.querySelectorAll('.slds-has-error').forEach(el => el.classList.remove('slds-has-error'));
     sectionOrgModal.querySelectorAll('.slds-form-element__help').forEach(el => el.remove());
     const url = getOrgLoginUrl(orgType);
-    console.log('orgName :: '+orgName);
-    console.log('orgType :: '+orgType);
-    console.log('userName :: '+userName);
-    console.log('password :: '+password);
-    console.log('description :: '+description);
-    console.log('url :: '+url);
-    console.log('targetOrgId :: '+targetOrgId);
 // edit
     if(targetOrgId){
-        console.log('edit');
         const org = new ORG(targetOrgId,folderId,orgName,orgType,url,userName,password,description);
-        console.log('org :: ');
-        console.log(org);
         // TODO 이거 folder 안에 들어있는 ORGs가 안 바뀌는거 같음. 확인해 봐야 함
         for(let index in folder.ORGs){
             if(folder.ORGs[index].Id == targetOrgId){
-                console.log('targetOrg 발견');
                 folder.ORGs[index] = org;
                 break;
             }
         }
-        console.log('folder :: ');    
-        console.log(folder);
     }else{ // new           
-        console.log('new');
         const orgId ='org_'+ generateRandomId(12);
         const org = new ORG(orgId,folderId,orgName,orgType,url,userName,password,description);
+        console.log('folder');
+        console.log(folder);
         folder.ORGs.push(org);
     }
 
@@ -948,7 +775,6 @@ async function onClickOrgModalSave(event){
     renderFolderList();
 }
 function getOrgLoginUrl(orgType){
-    console.log('orgType :: '+orgType);
     let result;
     if(orgType == '운영') result = 'https://login.salesforce.com';
     else if(orgType == '샌드박스') result = 'https://test.salesforce.com';
@@ -958,7 +784,6 @@ function getOrgLoginUrl(orgType){
 }
 async function renderFolderOptions() {
     const selectElement = document.getElementById('what-folder');
-
     if (!selectElement) {
         console.error('what-folder 요소를 찾을 수 없습니다.');
         return;
@@ -966,7 +791,6 @@ async function renderFolderOptions() {
 
     // 기존 옵션 제거
     selectElement.textContent = '';
-
     // 모든 폴더 데이터 가져오기
     const allStorages = Object.values(await getStorage(null));
     const folders = [];
@@ -998,7 +822,6 @@ async function renderFolderOptions() {
 }
 
 async function orgLinkClick(event){
-    console.log('orgLinkClick run');
     event.preventDefault(); // 기본 이동 동작 막기
     // 1. orgLink(=currentTarget)에서 가장 가까운 section 찾기
     const section = event.currentTarget.closest('section.slds-accordion__section');
@@ -1170,10 +993,11 @@ function generateRandomId(length) {
       return data
         .map(f => {
           const folderMatches = includesIC(f.name, q);
+          // 폴더명이 일치하더라도, 하위 오그들 중 검색어가 포함된 항목만 남김
           const filteredOrgs = (f.orgs || []).filter(o => includesIC(o.name, q));
-          if (folderMatches) return { ...f, orgs: f.orgs.slice() }; // 폴더명이 맞으면 전부 표시
-          return { ...f, orgs: filteredOrgs };
+          return { ...f, orgs: folderMatches ? filteredOrgs : filteredOrgs };
         })
+        // 폴더명이 일치하면(orgs가 0개여도) 폴더는 남기고, 아니면 하위 오그가 1개 이상일 때만 노출
         .filter(f => f.orgs.length > 0 || includesIC(f.name, q));
     }
   
@@ -1184,18 +1008,18 @@ function generateRandomId(length) {
         const folderName = (li.querySelector(FOLDER_NAME_SELECTOR)?.textContent || '').trim();
         const folderMatched = includesIC(folderName, q);
         let matchedOrgs = 0;
-  
+
         li.querySelectorAll(ORG_ROW_SELECTOR).forEach(row => {
           const orgName = (row.querySelector(ORG_NAME_IN_ROW_SELECTOR)?.textContent || '').trim();
-                // 규칙:
-        // - 검색어가 비어있으면 전부 표시
-        // - 폴더명이 매치되면 폴더 내 전체 표시
-        // - 폴더명이 매치되지 않으면, 오그명이 매치된 row만 표시
-        const match = !q ? true : (folderMatched ? true : includesIC(orgName, q));
+          // 규칙:
+          // - 검색어가 비어있으면 전부 표시
+          // - 폴더명이 매치되더라도, 표시되는 오그는 이름이 매치된 row만
+          // - 폴더명이 매치되지 않으면, 오그명이 매치된 row만 표시
+          const match = !q ? true : includesIC(orgName, q);
           row.style.display = match ? '' : 'none';
           if (match) matchedOrgs++;
         });
-  
+
         const showFolder = !q || folderMatched || matchedOrgs > 0;
         li.style.display = showFolder ? '' : 'none';
       });
