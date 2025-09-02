@@ -1,5 +1,5 @@
 window.homeScriptExecuted = true;
-window.addEventListener("load", async (event) => {
+window.addEventListener("load", async (event) => { 
     console.log('DOMContentLoaded run');
     const params = new URLSearchParams(window.location.search);
     const encodeFolderId = params.get('Zm9sZGVySWQ');

@@ -11,21 +11,16 @@
     },
     "background": {
         "service_worker": "background.js"
-      },
+    },
     "action": {
           "default_title" : "오그 바로가기",
           "default_popup" : "popup/popup.html"
     },
-    "permissions" : ["storage","scripting"],
-    "host_permissions": [
-        "https://*.lightning.force.com/",
-        "https://login.salesforce.com/"
-    ],
+    "permissions" : ["storage"],
     "content_scripts" : [
         {
             "js" : ["home.js"],
             "matches" : [
-                "https://*.lightning.force.com/*",
                 "https://login.salesforce.com/*",
                 "https://test.salesforce.com/*"
             ]
