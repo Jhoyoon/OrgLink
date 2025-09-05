@@ -578,6 +578,10 @@ function onClickGroundFolderAdd(event){
     const section = document.querySelector('#forlder-edit-modal');
     // section.querySelector('#folder-name').value = null;
     // modal open
+    // 새로 만들기이므로 반드시 초기화
+    section.dataset.folderId = '';   // ← 이게 중요! (수정 분기 타지 않게)
+    const input = section.querySelector('#folder-name');
+    input.value = '';
     section.classList.remove('slds-hidden');
     section.classList.add('slds-fade-in-open');
     // backDrop open
@@ -586,6 +590,8 @@ function onClickGroundFolderAdd(event){
 
 }
 function onClickDropDownOrgAdd(event){
+    // 새로 추가이므로 반드시 초기화
+    targetOrgId = null;
     const sectionOrgModal = document.querySelector('#org-modal');
     const rootSection = event.currentTarget.closest('.slds-accordion__section');
     const folderId = rootSection.dataset.folderId;
@@ -644,6 +650,7 @@ function onClickButtonOrgModalClose(event){
     sectionOrgModal.querySelector('#org-description').value = null;
     sectionOrgModal.querySelectorAll('.slds-has-error').forEach(el => el.classList.remove('slds-has-error'));
     sectionOrgModal.querySelectorAll('.slds-form-element__help').forEach(el => el.remove());
+    targetOrgId = null;    
     const divOrgBackdrop = document.querySelector('#add-org-backdrop');        
     
 
