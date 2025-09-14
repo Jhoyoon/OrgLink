@@ -24,3 +24,12 @@ Contact
 
 If you have any questions about this Privacy Policy, please contact:
 📧 [junghoyoon505@gmail.com]
+
+
+추가 예정 기능들
+- 최하단 깃허브 링크 추가
+- 설명 입력란 textArea로 변경
+- 모든 입력란 최대 입력값 제한
+- 폴더 100개 폴더당 오그 200개 제한 설정
+- 오그별 탭 구분 기능 추가(우선순위 낮음)
+- 오그 헤더 기능 추가
