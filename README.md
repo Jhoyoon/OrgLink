@@ -1,5 +1,23 @@
-Privacy Policy
-This Chrome extension (“the Extension”) is developed and published by hooon Jung.
+# 오그 바로가기
+
+## 릴리즈 노트
+
+### v1.2
+
+- 기존에 설명 필드에 1000자 이상 적어놨을시 데이터가 잘리게 됩니다.
+
+#### 추가 및 변경된 사항들
+- **탭 아이콘 색깔 설정**: 오그별로 아이콘 색상을 지정할수 있습니다.
+- **탭 그룹 기능**: 오그별로 탭 그룹을 자동 생성하고 색상을 지정할수 있습니다.
+- **Security Token 필드 추가**: 오그별 보안 토큰을 저장할수 있게 됐습니다. 입력 할시, 2차 인증(MFA, email)이 필요치 않습니다.
+- **드래그 앤 드랍 개선**: 오그를 다른 폴더로 드래그 앤 드랍 할수 있습니다.
+- **용량 제한 설정**: 폴더 최대 10개, 오그 총 200개로 제한됩니다. 데이터 양에 따라 200개보다 적을수 있으며, 한도 도달시 설명 필드의 내용을 줄여주세요.
+- **정보 내보내기, 가져오기**: 저장된 데이터를 파일로 내보낼수 있고, 가져올수 있습니다.
+
+---
+
+## Privacy Policy
+This Chrome extension ("the Extension") is developed and published by hooon Jung.
 
 Information Collection and Use
 	•	The Extension only collect Salesforce login information
@@ -24,17 +42,3 @@ Contact
 
 If you have any questions about this Privacy Policy, please contact:
 📧 [junghoyoon505@gmail.com]
-
-
-추가 예정 기능들
-- 최하단 깃허브 링크 추가
-- 설명 입력란 textArea로 변경
-- 모든 입력란 최대 입력값 제한
-- 폴더 100개 폴더당 오그 200개 제한 설정
-- 오그별 탭 구분 기능 추가(우선순위 낮음)
-- 오그 헤더 기능 추가 (우선순위 낮음)
-- 폴더 이동 기능
-- 아이콘 이미지 선명한걸로 변경
-- 검색 대상 폴더 - 오그 분리
-- 데이터 파일로 빼내기, 업로드
-- 확장 프로그램 닫을시, 마지막에 있던 오그 페이지 유지
