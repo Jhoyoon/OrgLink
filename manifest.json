@@ -1,0 +1,36 @@
+{
+    "manifest_version" : 3,
+    "name" : "오그 바로가기",
+    "description" : "오그 바로가기",
+    "version" : "1.2",
+    "icons": {
+        "16": "images/icon-16.png",
+        "32": "images/icon-32.png",
+        "48": "images/icon-48.png",
+        "128": "images/icon-128.png"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+          "default_title" : "오그 바로가기",
+          "default_popup" : "popup/popup.html"
+    },
+    "permissions" : ["storage","scripting","tabs","tabGroups","cookies"],
+    "host_permissions": [
+        "https://*.lightning.force.com/",
+        "https://*.salesforce.com/",
+        "https://*.salesforce-setup.com/"
+    ],
+    "content_scripts" : [
+        {
+            "js" : ["home.js"],
+            "matches" : [
+                "https://*.lightning.force.com/*",
+                "https://*.salesforce.com/*",
+                "https://*.salesforce-setup.com/*"
+            ],
+            "run_at": "document_end"
+        }
+    ]
+}

@@ -1,0 +1,320 @@
+  /* 설명 textarea */
+  #org-description {
+    resize: vertical;
+    min-height: 60px;
+    max-height: 200px;
+  }
+
+  /* 검색 scope 드롭다운 */
+  #search-scope {
+    padding: 2px 4px;
+    height: 32px;
+  }
+
+  /* 토스트 알림 */
+  .orglink-toast {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    min-width: 300px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    text-align: center;
+    animation: toast-fade-in 0.3s ease;
+  }
+  .orglink-toast.toast-error {
+    background-color: #c23934;
+    color: #fff;
+  }
+  .orglink-toast.toast-success {
+    background-color: #2e844a;
+    color: #fff;
+  }
+  @keyframes toast-fade-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  /* 글자 수 카운터 */
+  .desc-char-count {
+    text-align: right;
+    margin-top: 4px;
+    font-size: 11px;
+    color: #706e6b;
+  }
+
+  /* 둥근 디자인 */
+  .slds-accordion__list-item {
+    border-radius: 12px !important;
+  }
+
+  .slds-accordion__list-item .slds-dropdown-trigger {
+    position: relative;
+    z-index: 1;
+  }
+
+  .slds-accordion__list-item .slds-dropdown-trigger.slds-is-open {
+    z-index: 100;
+  }
+
+  header.slds-card {
+    border-radius: 12px !important;
+    overflow: hidden;
+  }
+
+  .header-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .header-search {
+    flex: 1;
+    display: flex;
+    gap: 4px;
+  }
+
+  .header-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  #header-folder-add,
+  #header-settings {
+    border-radius: 4px;
+    padding: 4px;
+    transition: background-color 0.15s;
+  }
+
+  #header-folder-add:hover,
+  #header-settings:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .org-action-icon {
+    border-radius: 4px;
+    padding: 8px;
+    margin: -4px 0 -4px 2px;
+    transition: background-color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .org-action-icon:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .slds-modal__container {
+    border-radius: 16px !important;
+    overflow: hidden;
+  }
+
+  /* SLDS .slds-button에 visibility:visible이 선언되어 있어,
+     부모 .slds-modal이 visibility:hidden이어도 버튼이 투명하게 클릭 가능 상태가 됨.
+     display:none으로 완전히 렌더 트리에서 제거해야 클릭 이벤트를 가로채지 않음. */
+  .slds-modal.slds-hidden,
+  .slds-modal[hidden] {
+    display: none !important;
+  }
+
+  .slds-modal:not(.slds-fade-in-open) {
+    pointer-events: none !important;
+  }
+
+  .slds-input, .slds-select, .slds-textarea {
+    border-radius: 8px !important;
+  }
+
+  .slds-button {
+    border-radius: 8px !important;
+  }
+
+  .slds-button_icon-border-filled {
+    border-radius: 50% !important;
+  }
+
+  .slds-card, #folders-container {
+    border-radius: 12px !important;
+  }
+
+  .org-row {
+    position: relative;
+    flex-wrap: nowrap;
+  }
+
+  .org-row .slds-size_9-of-12 {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .org-row .slds-size_9-of-12 p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .org-row:last-child {
+    border-bottom: none !important;
+  }
+
+  .org-row-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 10;
+    border-radius: 6px;
+  }
+
+  .slds-dropdown {
+    border-radius: 8px !important;
+    overflow: hidden;
+  }
+
+  .slds-accordion__summary {
+    border-radius: 12px 12px 0 0;
+  }
+
+  .slds-accordion__summary-heading {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .slds-accordion__summary-action {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .slds-accordion__summary-content {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .slds-accordion__section:not(.slds-is-open) .slds-accordion__summary {
+    border-radius: 12px;
+  }
+
+  /* 드래그 앤 드랍 애니메이션 */
+  .slds-accordion__list-item.dragging {
+    opacity: 0.4 !important;
+    border: 2px dashed #4285f4 !important;
+    background: #e8f0fe !important;
+    box-shadow: none !important;
+  }
+
+  .org-row.dragging {
+    opacity: 0.4 !important;
+    background: #e8f0fe !important;
+    border-radius: 6px;
+    border-bottom: 1px dashed #4285f4 !important;
+  }
+
+  @keyframes drag-settle {
+    0% {
+      background-color: #e8f0fe;
+      box-shadow: 0 2px 8px rgba(66, 133, 244, 0.25);
+    }
+    100% {
+      background-color: transparent;
+      box-shadow: none;
+    }
+  }
+
+  .drag-settled {
+    animation: drag-settle 0.4s ease-out;
+  }
+
+  /* 헬프텍스트 툴팁 */
+  .helptext-container {
+    position: relative;
+  }
+
+  .helptext-tooltip {
+    display: none !important;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    width: 210px;
+  }
+
+  .helptext-container:hover .helptext-tooltip,
+  .helptext-container button:focus + .helptext-tooltip {
+    display: inline-block !important;
+  }
+
+  /* 탭 그룹 색상 선택기 */
+  .tab-group-color-picker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 8px 0;
+  }
+
+  .tab-group-color-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+
+  .tab-group-color-btn:hover {
+    transform: scale(1.15);
+  }
+
+  .tab-group-color-btn.selected {
+    border-color: #0070d2;
+    box-shadow: 0 0 0 2px rgba(0, 112, 210, 0.3);
+  }
+
+  /* 탭 그룹 색상 선택기 비활성화 상태 */
+  .tab-group-color-picker.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .tab-group-color-picker.disabled .tab-group-color-btn {
+    cursor: not-allowed;
+  }
+
+  #tab-group-color-container.disabled {
+    opacity: 0.5;
+  }
+
+  /* 오그 모달 내 고급 설정 아코디언 */
+  #advanced-settings-accordion {
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+  }
+
+  #advanced-settings-accordion .slds-accordion__section {
+    border: none;
+  }
+
+  #advanced-settings-accordion .slds-accordion__summary {
+    background: #f3f2f2;
+    border-radius: 4px;
+  }
+
+  #advanced-settings-accordion .slds-accordion__section.slds-is-open .slds-accordion__summary {
+    border-radius: 4px 4px 0 0;
+  }
+
+  #advanced-settings-accordion .slds-accordion__content {
+    padding: 12px;
+  }
