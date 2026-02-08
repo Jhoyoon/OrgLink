@@ -2,7 +2,7 @@
     "manifest_version" : 3,
     "name" : "오그 바로가기",
     "description" : "오그 바로가기",
-    "version" : "1.2",
+    "version" : "1.21",
     "icons": {
         "16": "images/icon-16.png",
         "32": "images/icon-32.png",
@@ -16,7 +16,7 @@
           "default_title" : "오그 바로가기",
           "default_popup" : "popup/popup.html"
     },
-    "permissions" : ["storage","scripting","tabs","tabGroups","cookies"],
+    "permissions" : ["storage","tabs","tabGroups","cookies"],
     "host_permissions": [
         "https://*.lightning.force.com/",
         "https://*.salesforce.com/",

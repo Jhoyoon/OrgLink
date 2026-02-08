@@ -84,6 +84,18 @@ function getOrgTypeLabel(value) {
 }
 const SVG_NS = "http://www.w3.org/2000/svg";
 const XLINK_NS = "http://www.w3.org/1999/xlink";
+
+const ICON_PATHS = {
+    add: 'M300 290h165c8 0 15-7 15-15v-30c0-8-7-15-15-15H300c-6 0-10-4-10-10V55c0-8-7-15-15-15h-30c-8 0-15 7-15 15v165c0 6-4 10-10 10H55c-8 0-15 7-15 15v30c0 8 7 15 15 15h165c6 0 10 4 10 10v165c0 8 7 15 15 15h30c8 0 15-7 15-15V300c0-6 4-10 10-10z',
+    settings: 'M261 191c-39 0-70 31-70 70s31 70 70 70 70-31 70-70-31-70-70-70zm210 133l-37-31a195 195 0 000-68l37-31c12-10 16-28 8-42l-16-28a34 34 0 00-40-14l-46 17a168 168 0 00-59-34l-8-47c-3-16-17-25-33-25h-32c-16 0-30 9-33 25l-8 46a180 180 0 00-60 34l-46-17-11-2c-12 0-23 6-29 16l-16 28c-8 14-5 32 8 42l37 31a195 195 0 000 68l-37 31a34 34 0 00-8 42l16 28a34 34 0 0040 14l46-17c18 16 38 27 59 34l8 48a33 33 0 0033 27h32c16 0 30-12 33-28l8-48a170 170 0 0062-37l43 17 12 2c12 0 23-6 29-16l15-26c9-11 5-29-7-39zm-210 47c-61 0-110-49-110-110s49-110 110-110 110 49 110 110-49 110-110 110z',
+    close: 'M310 254l130-131c6-6 6-15 0-21l-20-21c-6-6-15-6-21 0L268 212a10 10 0 01-14 0L123 80c-6-6-15-6-21 0l-21 21c-6 6-6 15 0 21l131 131c4 4 4 10 0 14L80 399c-6 6-6 15 0 21l21 21c6 6 15 6 21 0l131-131a10 10 0 0114 0l131 131c6 6 15 6 21 0l21-21c6-6 6-15 0-21L310 268a10 10 0 010-14z',
+    down: 'M83 140h354c10 0 17 13 9 22L273 374c-6 8-19 8-25 0L73 162c-7-9-1-22 10-22z',
+    switch: 'M476 178L271 385c-6 6-16 6-22 0L44 178c-6-6-6-16 0-22l22-22c6-6 16-6 22 0l161 163c6 6 16 6 22 0l161-163c6-6 16-6 22 0l22 22c5 7 5 16 0 22z',
+    info: 'M260 20a240 240 0 100 480 240 240 0 100-480zm0 121c17 0 30 13 30 30s-13 30-30 30-30-13-30-30 13-30 30-30zm50 210c0 5-4 9-10 9h-80c-5 0-10-3-10-9v-20c0-5 4-11 10-11 5 0 10-3 10-9v-40c0-5-4-11-10-11-5 0-10-3-10-9v-20c0-5 4-11 10-11h60c5 0 10 5 10 11v80c0 5 4 9 10 9 5 0 10 5 10 11z',
+    logout: 'M210 485v-30c0-8-7-15-15-15H95c-8 0-15-7-15-15V95c0-8 7-15 15-15h100c8 0 15-7 15-15V35c0-8-7-15-15-15H60a40 40 0 00-40 40v400a40 40 0 0040 40h135c8 0 15-7 15-15zm286-215c6-6 6-15 0-21L361 114c-6-6-15-6-21 0l-21 21c-6 6-6 15 0 21l56 56c6 6 2 17-7 17H155c-8 0-15 6-15 14v30c0 8 7 16 15 16h212c9 0 13 11 7 17l-56 56c-6 6-6 15 0 21l21 21c6 6 15 6 21 0l136-134z',
+    edit: 'M95 334l89 89c4 4 10 4 14 0l222-223c4-4 4-10 0-14l-88-88a10 10 0 00-14 0L95 321c-4 4-4 10 0 13zM361 57a10 10 0 000 14l88 88c4 4 10 4 14 0l25-25a38 38 0 000-55l-47-47a40 40 0 00-57 0zM21 482c-2 10 7 19 17 17l109-26c4-1 7-3 9-5l2-2c2-2 3-9-1-13l-90-90c-4-4-11-3-13-1l-2 2a20 20 0 00-5 9z',
+    delete: 'M45.5 10H33V6a4 4 0 00-4-4h-6a4 4 0 00-4 4v4H6.5c-.8 0-1.5.7-1.5 1.5v3c0 .8.7 1.5 1.5 1.5h39c.8 0 1.5-.7 1.5-1.5v-3c0-.8-.7-1.5-1.5-1.5zM23 7c0-.6.4-1 1-1h4c.6 0 1 .4 1 1v3h-6zm18.5 13h-31c-.8 0-1.5.7-1.5 1.5V45a5 5 0 005 5h24a5 5 0 005-5V21.5c0-.8-.7-1.5-1.5-1.5zM23 42c0 .6-.4 1-1 1h-2c-.6 0-1-.4-1-1V28c0-.6.4-1 1-1h2c.6 0 1 .4 1 1zm10 0c0 .6-.4 1-1 1h-2c-.6 0-1-.4-1-1V28c0-.6.4-1 1-1h2c.6 0 1 .4 1 1z'
+};
 const MAX_FOLDERS = 10;
 const MAX_TOTAL_ORGS = 200;
 let targetOrgId;
@@ -213,18 +225,17 @@ function handleAccordionClick(event) {
         // Org 액션 아이콘 확인
         const actionIcon = target.closest('.org-action-icon');
         if (actionIcon) {
-            const use = actionIcon.querySelector('use');
-            const href = use?.getAttributeNS(XLINK_NS, 'href') || '';
+            const iconName = actionIcon.dataset.icon || '';
 
-            if (href.includes('#logout')) {
+            if (iconName === 'logout') {
                 orgLinkClick(event);
                 return;
             }
-            if (href.includes('#edit')) {
+            if (iconName === 'edit') {
                 onClickOrgEdit(event);
                 return;
             }
-            if (href.includes('#delete')) {
+            if (iconName === 'delete') {
                 onClickOrgDelete(event);
                 return;
             }
@@ -605,12 +616,10 @@ async function renderFolderList() {
         const accordionSummaryH2 = createDom('h2',['slds-accordion__summary-heading']);
         const accordionSummaryButton = createDom('button',['slds-button','slds-button_reset','slds-accordion__summary-action'],null,{'aria-controls' : folder.Id,'aria-expanded' : String(isOpen),'title' : 'Accordion summary'});
         // 이벤트 위임 사용
-        const accordionSvg = createSVG(['slds-accordion__summary-action-icon','slds-button__icon','slds-button__icon_left'],null,{'aria-hidden' : 'true', "pointer-events": "auto"});
-        const accordionUse = createUse(null,null,null,{'xlink:href' : {namespace : XLINK_NS,value : './assets/icons/utility-sprite/svg/symbols.svg#switch'}});
+        const accordionSvg = createInlineIconSVG('switch', ['slds-accordion__summary-action-icon','slds-button__icon','slds-button__icon_left'],null,{'aria-hidden' : 'true', "pointer-events": "auto"});
 
         const accordionSpan = createDom('span',['slds-accordion__summary-content']);
         accordionSpan.textContent = folder.Name;
-        accordionSvg.appendChild(accordionUse);
         accordionSummaryButton.append(accordionSvg,accordionSpan);
         accordionSummaryH2.appendChild(accordionSummaryButton);
         accordionSummaryDiv.appendChild(accordionSummaryH2);
@@ -619,9 +628,7 @@ async function renderFolderList() {
         const dropDownDiv = createDom('div',['slds-dropdown-trigger','slds-dropdown-trigger_click']);
         // 이벤트 위임 사용
         const showMoreButton = createDom('button',['slds-button','slds-button_icon','slds-button_icon-border-filled','slds-button_icon-x-small'],null,{'aria-haspopup':'true','title':'Show More'});
-        const showMoreSvg = createSVG(['slds-button__icon'],null,{'aria-hidden' : 'true'});
-        
-        const showMoreUse = createUse(null,null,null,{'xlink:href' : {namespace : XLINK_NS,value : './assets/icons/utility-sprite/svg/symbols.svg#down'}});
+        const showMoreSvg = createInlineIconSVG('down', ['slds-button__icon'],null,{'aria-hidden' : 'true'});
         const showMoreSpan = createDom('span',['slds-assistive-text']);
         showMoreSpan.textContent = 'Show More';
         const dropDownActionDiv=  createDom('div',['slds-dropdown','slds-dropdown_actions','slds-dropdown_right']);
@@ -638,7 +645,6 @@ async function renderFolderList() {
         // 이벤트 위임 사용
         dropDownActionLiOrgAddSpan.textContent = '오그추가';
         // button에 붙이자
-        showMoreSvg.appendChild(showMoreUse);
         showMoreButton.appendChild(showMoreSvg);
         // 폴더 삭제
         const dropDownActionLiFolderDelete = createDom('li',['slds-dropdown__item'],null,{'role' : 'presentation'});
@@ -691,21 +697,18 @@ async function renderFolderList() {
             divOrgName.appendChild(pOrgName);
             // ORG URL (이벤트 위임 사용)
             let divOrgUrl = createDom('div',['slds-col','slds-size_1-of-12','org-action-icon']);
-            let svgOrgUrl = createSVG(['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer'} );
-            let useOrgUrl = createUse(null,null,null,{'xlink:href' : {namespace : XLINK_NS,value : './assets/icons/utility-sprite/svg/symbols.svg#logout'}});
-            svgOrgUrl.appendChild(useOrgUrl);
+            divOrgUrl.dataset.icon = 'logout';
+            let svgOrgUrl = createInlineIconSVG('logout', ['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer'} );
             divOrgUrl.appendChild(svgOrgUrl);
             // ORG Edit (이벤트 위임 사용)
             let divOrgEdit = createDom('div',['slds-col','slds-size_1-of-12','org-action-icon']);
-            let svgOrgEdit = createSVG(['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer'});
-            let useOrgEdit = createUse(null,null,null,{'xlink:href' : {namespace : XLINK_NS,value : './assets/icons/utility-sprite/svg/symbols.svg#edit'}});
-            svgOrgEdit.appendChild(useOrgEdit);
+            divOrgEdit.dataset.icon = 'edit';
+            let svgOrgEdit = createInlineIconSVG('edit', ['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer'});
             divOrgEdit.appendChild(svgOrgEdit);
             // ORG Delete (이벤트 위임 사용)
             let divOrgDelete = createDom('div',['slds-col','slds-size_1-of-12','org-action-icon']);
-            let svgOrgDelete = createSVG(['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer' });
-            let useOrgDelete = createUse(null,null,null,{'xlink:href' : {namespace : XLINK_NS,value : './assets/icons/utility-sprite/svg/symbols.svg#delete'}});
-            svgOrgDelete.appendChild(useOrgDelete);
+            divOrgDelete.dataset.icon = 'delete';
+            let svgOrgDelete = createInlineIconSVG('delete', ['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer' });
             divOrgDelete.appendChild(svgOrgDelete);
             // ***여기서 한 줄로 묶기***
             orgRow.append(divOrgName, divOrgUrl, divOrgEdit, divOrgDelete);
@@ -1790,6 +1793,19 @@ function createSVG(classNames=[],styleObj={}, attributes={}){
         }
     }
     return dom;
+}
+function createInlineIconSVG(iconName, classNames=[], styleObj={}, attributes={}) {
+    const svg = createSVG(classNames, styleObj, attributes);
+    const viewBox = (iconName === 'delete') ? '0 0 52 52' : '0 0 520 520';
+    svg.setAttribute('viewBox', viewBox);
+    svg.setAttribute('xmlns', SVG_NS);
+    const pathData = ICON_PATHS[iconName];
+    if (pathData) {
+        const path = document.createElementNS(SVG_NS, 'path');
+        path.setAttribute('d', pathData);
+        svg.appendChild(path);
+    }
+    return svg;
 }
 function createUse(classNames=[],styleObj={}, attributes={},attributesNS={}){
     const dom = document.createElementNS(SVG_NS,'use');
