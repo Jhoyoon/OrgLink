@@ -2,7 +2,7 @@
 
 ## 릴리즈 노트
 ### v1.21
-- 아이콘 안 보이던 버그 수정
+- 아이콘 표시 안 되던 버그 수정
 
 ### v1.2
 
@@ -18,17 +18,22 @@
 
 ---
 
+#### TODO
+- 아이콘 색깔 설정 버그 수정
+- 잔여 스토리지 용량 설정 모달에서 표시
+- 매인 화면에서 탭 - 파비콘 색깔 표시
+
 ## Privacy Policy
 This Chrome extension ("the Extension") is developed and published by hooon Jung.
 
 Information Collection and Use
-	•	The Extension only collect Salesforce login information
-	•	All data processed by the Extension remains on the user’s device and is not transmitted to external servers.
+•	The Extension only collect Salesforce login information
+•	All data processed by the Extension remains on the user’s device and is not transmitted to external servers.
 
 Permissions
 
 The Extension may request limited permissions such as:
-	•	Storage: To save user's salesforce login information locally.
+•	Storage: To save user's salesforce login information locally.
 
 These permissions are used solely for the Extension’s operation and are not used to collect personal data.
 
