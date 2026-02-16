@@ -28,7 +28,16 @@
 - 테스트 사용자 로그인 세션 분리
   - 구현 가능한걸까
 - 언어 선택
+  - 설정 모달 언어 선택 picklist 추가
   - English, 한국어
+  - default 한국어
+  - 모든 화면 표시 라벨에 대한 언어 분리 필요
+- 오그 테마 브랜드 이미지로 파비콘 설정
+  - 최초 오그 저장시, 비동기로 get thema brand image api 호출. 응답을 기다리지 말것
+  - 저장시, 직후에는 기본 오그 파비콘 표시
+  - 이후 thema brand image 응답 받을시, canvas 리사이즈 => base64 JPEG => CachedFavicon 저장
+  - 이후 화면 재렌더링 및 로그인 시도시 해당 파비콘 설정
+  - 테마 이미지 수동 갱신 버튼 추가
 ## Privacy Policy
 This Chrome extension ("the Extension") is developed and published by hooon Jung.
 
