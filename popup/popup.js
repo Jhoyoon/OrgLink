@@ -1,33 +1,4 @@
 
-// =====================
-// XOR 난독화 유틸리티
-// =====================
-const XOR_KEY = 'OrgLinkSecretKey2024';
-
-function xorObfuscate(str) {
-    const bytes = new TextEncoder().encode(str);
-    const key = new TextEncoder().encode(XOR_KEY);
-    const result = new Uint8Array(bytes.length);
-    for (let i = 0; i < bytes.length; i++) {
-        result[i] = bytes[i] ^ key[i % key.length];
-    }
-    // 각 바이트를 Latin-1 문자로 변환
-    return Array.from(result).map(b => String.fromCharCode(b)).join('');
-}
-
-function xorDeobfuscate(str) {
-    const bytes = new Uint8Array(str.length);
-    for (let i = 0; i < str.length; i++) {
-        bytes[i] = str.charCodeAt(i);
-    }
-    const key = new TextEncoder().encode(XOR_KEY);
-    const result = new Uint8Array(bytes.length);
-    for (let i = 0; i < bytes.length; i++) {
-        result[i] = bytes[i] ^ key[i % key.length];
-    }
-    return new TextDecoder().decode(result);
-}
-
 /**
  * 스토리지에 row는 foler만
  * 오그는 칼럼 하나에 전부 다 담아버리자
@@ -45,19 +16,15 @@ class Folder {
     }
 }
 class ORG {
-    Id = ''; // org + 12자리 랜덤 문자열
-    FolderId = '';
-    Name = '';
-    OrgType = '';
-    URL = '';
-    UserName = '';
-    Password = '';
-    Description = '';
-    FaviconColor = '#0070d2';
-    SecurityToken = '';
-    TabGroupEnabled = false;
-    TabGroupColor = 'blue';
-    constructor(Id, FolderId, Name,OrgType, URL, UserName, Password,Description,FaviconColor,SecurityToken,TabGroupEnabled,TabGroupColor) {
+    Id; // org + 12자리 랜덤 문자열
+    Name;
+    OrgType;
+    URL;
+    UserName;
+    Password;
+    Description;
+    FaviconColor;
+    constructor(Id, FolderId, Name,OrgType, URL, UserName, Password,Description,FaviconColor) {
         this.Id = Id;
         this.FolderId = FolderId;
         this.Name = Name;
@@ -67,10 +34,6 @@ class ORG {
         this.Password = Password;
         this.Description = Description;
         this.FaviconColor = FaviconColor || '#0070d2';
-        this.SecurityToken = SecurityToken || '';
-        // TabGroupEnabled는 boolean이므로 명시적으로 체크 (false도 유효한 값)
-        this.TabGroupEnabled = typeof TabGroupEnabled === 'boolean' ? TabGroupEnabled : false;
-        this.TabGroupColor = TabGroupColor || 'blue';
     }
 }
 const ORG_TYPE_LABELS = {
@@ -84,261 +47,16 @@ function getOrgTypeLabel(value) {
 }
 const SVG_NS = "http://www.w3.org/2000/svg";
 const XLINK_NS = "http://www.w3.org/1999/xlink";
-
-const ICON_PATHS = {
-    add: 'M300 290h165c8 0 15-7 15-15v-30c0-8-7-15-15-15H300c-6 0-10-4-10-10V55c0-8-7-15-15-15h-30c-8 0-15 7-15 15v165c0 6-4 10-10 10H55c-8 0-15 7-15 15v30c0 8 7 15 15 15h165c6 0 10 4 10 10v165c0 8 7 15 15 15h30c8 0 15-7 15-15V300c0-6 4-10 10-10z',
-    settings: 'M261 191c-39 0-70 31-70 70s31 70 70 70 70-31 70-70-31-70-70-70zm210 133l-37-31a195 195 0 000-68l37-31c12-10 16-28 8-42l-16-28a34 34 0 00-40-14l-46 17a168 168 0 00-59-34l-8-47c-3-16-17-25-33-25h-32c-16 0-30 9-33 25l-8 46a180 180 0 00-60 34l-46-17-11-2c-12 0-23 6-29 16l-16 28c-8 14-5 32 8 42l37 31a195 195 0 000 68l-37 31a34 34 0 00-8 42l16 28a34 34 0 0040 14l46-17c18 16 38 27 59 34l8 48a33 33 0 0033 27h32c16 0 30-12 33-28l8-48a170 170 0 0062-37l43 17 12 2c12 0 23-6 29-16l15-26c9-11 5-29-7-39zm-210 47c-61 0-110-49-110-110s49-110 110-110 110 49 110 110-49 110-110 110z',
-    close: 'M310 254l130-131c6-6 6-15 0-21l-20-21c-6-6-15-6-21 0L268 212a10 10 0 01-14 0L123 80c-6-6-15-6-21 0l-21 21c-6 6-6 15 0 21l131 131c4 4 4 10 0 14L80 399c-6 6-6 15 0 21l21 21c6 6 15 6 21 0l131-131a10 10 0 0114 0l131 131c6 6 15 6 21 0l21-21c6-6 6-15 0-21L310 268a10 10 0 010-14z',
-    down: 'M83 140h354c10 0 17 13 9 22L273 374c-6 8-19 8-25 0L73 162c-7-9-1-22 10-22z',
-    switch: 'M476 178L271 385c-6 6-16 6-22 0L44 178c-6-6-6-16 0-22l22-22c6-6 16-6 22 0l161 163c6 6 16 6 22 0l161-163c6-6 16-6 22 0l22 22c5 7 5 16 0 22z',
-    info: 'M260 20a240 240 0 100 480 240 240 0 100-480zm0 121c17 0 30 13 30 30s-13 30-30 30-30-13-30-30 13-30 30-30zm50 210c0 5-4 9-10 9h-80c-5 0-10-3-10-9v-20c0-5 4-11 10-11 5 0 10-3 10-9v-40c0-5-4-11-10-11-5 0-10-3-10-9v-20c0-5 4-11 10-11h60c5 0 10 5 10 11v80c0 5 4 9 10 9 5 0 10 5 10 11z',
-    logout: 'M210 485v-30c0-8-7-15-15-15H95c-8 0-15-7-15-15V95c0-8 7-15 15-15h100c8 0 15-7 15-15V35c0-8-7-15-15-15H60a40 40 0 00-40 40v400a40 40 0 0040 40h135c8 0 15-7 15-15zm286-215c6-6 6-15 0-21L361 114c-6-6-15-6-21 0l-21 21c-6 6-6 15 0 21l56 56c6 6 2 17-7 17H155c-8 0-15 6-15 14v30c0 8 7 16 15 16h212c9 0 13 11 7 17l-56 56c-6 6-6 15 0 21l21 21c6 6 15 6 21 0l136-134z',
-    edit: 'M95 334l89 89c4 4 10 4 14 0l222-223c4-4 4-10 0-14l-88-88a10 10 0 00-14 0L95 321c-4 4-4 10 0 13zM361 57a10 10 0 000 14l88 88c4 4 10 4 14 0l25-25a38 38 0 000-55l-47-47a40 40 0 00-57 0zM21 482c-2 10 7 19 17 17l109-26c4-1 7-3 9-5l2-2c2-2 3-9-1-13l-90-90c-4-4-11-3-13-1l-2 2a20 20 0 00-5 9z',
-    delete: 'M45.5 10H33V6a4 4 0 00-4-4h-6a4 4 0 00-4 4v4H6.5c-.8 0-1.5.7-1.5 1.5v3c0 .8.7 1.5 1.5 1.5h39c.8 0 1.5-.7 1.5-1.5v-3c0-.8-.7-1.5-1.5-1.5zM23 7c0-.6.4-1 1-1h4c.6 0 1 .4 1 1v3h-6zm18.5 13h-31c-.8 0-1.5.7-1.5 1.5V45a5 5 0 005 5h24a5 5 0 005-5V21.5c0-.8-.7-1.5-1.5-1.5zM23 42c0 .6-.4 1-1 1h-2c-.6 0-1-.4-1-1V28c0-.6.4-1 1-1h2c.6 0 1 .4 1 1zm10 0c0 .6-.4 1-1 1h-2c-.6 0-1-.4-1-1V28c0-.6.4-1 1-1h2c.6 0 1 .4 1 1z'
-};
-const MAX_FOLDERS = 10;
-const MAX_TOTAL_ORGS = 200;
+const MAX_FOLDERS = 100;
+const MAX_ORGS_PER_FOLDER = 200;
 let targetOrgId;
 let targetFolderId;
-
-// =====================
-// 스토리지 캐시 (성능 최적화)
-// =====================
-const StorageCache = {
-    _data: null,
-    _lastFetch: 0,
-    _maxAge: 5000, // 5초 캐시 유효
-
-    async getAll() {
-        const now = Date.now();
-        if (this._data && (now - this._lastFetch) < this._maxAge) {
-            return this._data;
-        }
-        this._data = await new Promise((resolve, reject) => {
-            chrome.storage.sync.get(null, (result) => {
-                if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-                else resolve(result);
-            });
-        });
-        this._lastFetch = now;
-        return this._data;
-    },
-
-    invalidate() {
-        this._data = null;
-        this._lastFetch = 0;
-    },
-
-    update(key, value) {
-        if (this._data) {
-            this._data[key] = value;
-        }
-    },
-
-    remove(key) {
-        if (this._data) {
-            if (Array.isArray(key)) {
-                key.forEach(k => delete this._data[k]);
-            } else {
-                delete this._data[key];
-            }
-        }
-    }
-};
-
-// =====================
-// 폼 유효성 검사 / 모달 헬퍼
-// =====================
-function validateRequired(value, divId, formId, errorText) {
-    const div = document.querySelector(divId);
-    const form = document.querySelector(formId);
-    if (!value) {
-        if (!div.classList.contains('slds-has-error')) {
-            div.classList.add('slds-has-error');
-            const msg = createDom('div', ['slds-form-element__help']);
-            msg.textContent = errorText;
-            form.appendChild(msg);
-        }
-        return false;
-    } else {
-        if (div.classList.contains('slds-has-error')) {
-            div.classList.remove('slds-has-error');
-            form.querySelector('.slds-form-element__help')?.remove();
-        }
-        return true;
-    }
-}
-
-function clearFormErrors(container) {
-    container.querySelectorAll('.slds-has-error').forEach(el => el.classList.remove('slds-has-error'));
-    container.querySelectorAll('.slds-form-element__help').forEach(el => el.remove());
-}
-
-function closeModal(modalEl, backdropEl) {
-    modalEl.classList.add('slds-hidden');
-    modalEl.classList.remove('slds-fade-in-open');
-    backdropEl.classList.remove('slds-backdrop_open');
-    clearUIState();
-}
-
-// =====================
-// 이벤트 위임 핸들러 (성능 최적화)
-// =====================
-function handleAccordionClick(event) {
-    const target = event.target;
-
-    // 아코디언 토글 버튼
-    if (target.closest('.slds-accordion__summary-action')) {
-        onClickSectionIconOnly(event);
-        return;
-    }
-
-    // 드롭다운 메뉴 아이템 (트리거 체크보다 먼저!)
-    const dropdownItem = target.closest('.slds-dropdown__item');
-    if (dropdownItem) {
-        const text = dropdownItem.textContent;
-        if (text.includes('편집')) {
-            onClickDropDownEdit(event);
-            return;
-        }
-        if (text.includes('오그추가')) {
-            onClickDropDownOrgAdd(event);
-            return;
-        }
-        if (text.includes('폴더삭제')) {
-            onClickDropDownFolderDelete(event);
-            return;
-        }
-    }
-
-    // 드롭다운 토글
-    if (target.closest('.slds-dropdown-trigger')) {
-        onClickDropDownDiv(event);
-        return;
-    }
-
-    // Org 행 클릭
-    const orgRow = target.closest('.org-row');
-    if (orgRow) {
-        event.stopPropagation();
-
-        // Org 액션 아이콘 확인
-        const actionIcon = target.closest('.org-action-icon');
-        if (actionIcon) {
-            const iconName = actionIcon.dataset.icon || '';
-
-            if (iconName === 'logout') {
-                orgLinkClick(event);
-                return;
-            }
-            if (iconName === 'edit') {
-                onClickOrgEdit(event);
-                return;
-            }
-            if (iconName === 'delete') {
-                onClickOrgDelete(event);
-                return;
-            }
-        }
-
-        onClickOrgRow(event);
-        return;
-    }
-}
-
-function handleDragStart(event) {
-    const orgRow = event.target.closest('.org-row');
-    if (orgRow) {
-        onOrgDragStart(event);
-        return;
-    }
-
-    const folderLi = event.target.closest('li.slds-accordion__list-item');
-    if (folderLi) {
-        onFolderDragStart(event);
-        return;
-    }
-}
-
-function handleDragOver(event) {
-    if (draggingOrgId) {
-        const orgRow = event.target.closest('.org-row');
-        if (orgRow) {
-            onOrgDragOver(event);
-            return;
-        }
-
-        const content = event.target.closest('.slds-accordion__content');
-        if (content) {
-            onContentDragOver(event);
-            return;
-        }
-
-        const section = event.target.closest('section.slds-accordion__section');
-        if (section) {
-            onSectionOrgDragOver(event);
-            return;
-        }
-    }
-
-    if (draggingFolderDragId) {
-        const folderLi = event.target.closest('li.slds-accordion__list-item');
-        if (folderLi) {
-            onFolderDragOver(event);
-            return;
-        }
-    }
-}
-
-function handleDragLeave(event) {
-    if (draggingOrgId) {
-        onOrgDragLeave(event);
-    }
-}
-
-function handleDrop(event) {
-    if (draggingOrgId) {
-        const orgRow = event.target.closest('.org-row');
-        if (orgRow) {
-            onOrgDrop(event);
-            return;
-        }
-
-        const content = event.target.closest('.slds-accordion__content');
-        if (content) {
-            onContentDrop(event);
-            return;
-        }
-
-        const section = event.target.closest('section.slds-accordion__section');
-        if (section) {
-            onSectionOrgDrop(event);
-            return;
-        }
-    }
-
-    if (draggingFolderDragId) {
-        onFolderDrop(event);
-    }
-}
-
-function handleDragEnd(event) {
-    if (draggingOrgId) {
-        onOrgDragEnd(event);
-        return;
-    }
-
-    if (draggingFolderDragId) {
-        onFolderDragEnd();
-        return;
-    }
-}
 
 function showToast(message, type = 'error') {
     const existing = document.querySelector('.orglink-toast');
     if (existing) existing.remove();
     const toast = document.createElement('div');
-    toast.className = `orglink-toast toast-${type}`;
+    toast.className = 'orglink-toast toast-' + type;
     toast.textContent = message;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
@@ -352,19 +70,27 @@ function debounceGlobal(fn, wait) {
     };
 }
 
-// 전체 오그 수 계산 함수
-async function getTotalOrgCount() {
-    const allData = await StorageCache.getAll();
-    let count = 0;
-    for (const key of Object.keys(allData)) {
-        if (key.startsWith('org_')) count++;
-    }
-    return count;
-}
+// 파비콘 로그 확인 함수 (콘솔에서 getFaviconLogs()로 호출 가능)
+window.getFaviconLogs = function() {
+    const logs = JSON.parse(localStorage.getItem('faviconLogs') || '[]');
+    console.log('=== 파비콘 로그 ===');
+    logs.forEach(log => console.log(log));
+    console.log('=== 끝 ===');
+    return logs;
+};
+
+// 파비콘 로그 초기화 함수
+window.clearFaviconLogs = function() {
+    localStorage.removeItem('faviconLogs');
+    console.log('파비콘 로그 삭제됨');
+};
 
 document.addEventListener("DOMContentLoaded", init);
-async function init() {
-    const foldersContainer = document.querySelector('#folders-container');    
+async function init() { 
+    //   chrome.storage.sync.clear(() => {
+    //     console.log('확장 프로그램 로컬 스토리지 삭제 완료');
+    //   });
+        const foldersContainer = document.querySelector('#folders-container');    
     const sectionFolderModal = document.querySelector('#folder-edit-modal');
     const buttonFolderEditModalX = sectionFolderModal.querySelector('#folder-edit-modal-x');
     const buttonFolderCloseButton =  sectionFolderModal.querySelector('#folder-modal-close-button');
@@ -436,7 +162,6 @@ async function init() {
     document.querySelector('#org-name')?.addEventListener('input', autoSaveUI);
     document.querySelector('#org-username')?.addEventListener('input', autoSaveUI);
     document.querySelector('#password')?.addEventListener('input', autoSaveUI);
-    document.querySelector('#security-token')?.addEventListener('input', autoSaveUI);
     document.querySelector('#org-description')?.addEventListener('input', autoSaveUI);
     // 파비콘 색상 박스 클릭 → color picker 열기
     const faviconBox = document.querySelector('#favicon-color-box');
@@ -454,40 +179,6 @@ async function init() {
             saveUIState();
         });
     }
-    // 탭 그룹 색상 선택기
-    const tabGroupColorPicker = document.querySelector('#tab-group-color-picker');
-    if (tabGroupColorPicker) {
-        tabGroupColorPicker.addEventListener('click', (e) => {
-            const btn = e.target.closest('.tab-group-color-btn');
-            if (!btn) return;
-            // 비활성화 상태면 무시
-            if (tabGroupColorPicker.classList.contains('disabled')) return;
-            const color = btn.dataset.color;
-            document.querySelector('#tab-group-color').value = color;
-            // 선택 표시 업데이트
-            tabGroupColorPicker.querySelectorAll('.tab-group-color-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            saveUIState();
-        });
-    }
-    // 고급 설정 아코디언 토글
-    const advancedSettingsToggle = document.querySelector('#advanced-settings-toggle');
-    if (advancedSettingsToggle) {
-        advancedSettingsToggle.addEventListener('click', (e) => {
-            const section = document.querySelector('#advanced-settings-section');
-            const isOpen = section.classList.contains('slds-is-open');
-            section.classList.toggle('slds-is-open', !isOpen);
-            advancedSettingsToggle.setAttribute('aria-expanded', String(!isOpen));
-        });
-    }
-    // 탭 그룹 기능 체크박스
-    const tabGroupEnabledCheckbox = document.querySelector('#tab-group-enabled');
-    if (tabGroupEnabledCheckbox) {
-        tabGroupEnabledCheckbox.addEventListener('change', (e) => {
-            updateTabGroupColorPickerState(e.target.checked);
-            saveUIState();
-        });
-    }
     document.querySelector('#folder-name')?.addEventListener('input', autoSaveUI);
     document.querySelector('#org-folder-select')?.addEventListener('change', saveUIState);
     window.addEventListener('beforeunload', saveUIState);
@@ -495,23 +186,13 @@ async function init() {
         if (document.visibilityState === 'hidden') saveUIState();
     });
 
-    // 메모리 정리: popup 종료 시 전역 상태 및 캐시 정리
-    window.addEventListener('unload', cleanupOnClose);
-
-    // 이벤트 위임 (성능 최적화): 개별 리스너 대신 상위 컨테이너에 단일 핸들러
+    // 폴더/오그 드래그 폴백: li 사이 빈 공간에 드롭해도 인식되도록 ul에 핸들러 등록
     const accordionUl = document.querySelector('#folders-container > ul.slds-accordion');
-    accordionUl.addEventListener('click', handleAccordionClick);
-    accordionUl.addEventListener('dragstart', handleDragStart);
     accordionUl.addEventListener('dragover', (e) => {
-        // 기존 폴백 처리 유지
         if (draggingFolderDragId) e.preventDefault();
         if (draggingOrgId) e.preventDefault();
-        // 위임 핸들러 호출
-        handleDragOver(e);
     });
-    accordionUl.addEventListener('dragleave', handleDragLeave);
     accordionUl.addEventListener('drop', (e) => {
-        // 기존 폴백 처리 유지
         if (draggingFolderDragId) {
             e.preventDefault();
             folderDropDone = true;
@@ -520,90 +201,28 @@ async function init() {
             e.preventDefault();
             orgDropSuccess = true;
         }
-        // 위임 핸들러 호출
-        handleDrop(e);
     });
-    accordionUl.addEventListener('dragend', handleDragEnd);
 
     renderFolderList();
     await restoreUIState();
 }
-
-// =====================
-// DOM 정리 함수 (메모리 누수 방지)
-// =====================
-function cleanupAccordionDOM() {
-    const accordionUl = document.getElementById("folders-container")?.querySelector('ul.slds-accordion');
-    if (!accordionUl) return;
-
-    // FLIP 애니메이션의 transform/transition 스타일 정리
-    accordionUl.querySelectorAll('[style*="transform"]').forEach(el => {
-        el.style.transform = '';
-        el.style.transition = '';
-    });
-
-    // 드래그 상태 클래스 정리
-    accordionUl.querySelectorAll('.dragging, .drag-settled').forEach(el => {
-        el.classList.remove('dragging', 'drag-settled');
-    });
-}
-
-// Popup 종료 시 메모리 정리
-function cleanupOnClose() {
-    // 전역 상태 정리
-    targetOrgId = null;
-    targetFolderId = null;
-    draggingFolderDragId = null;
-    draggingOrgId = null;
-    draggingFolderId = null;
-    deleteFolderId = null;
-    folderDropDone = false;
-    orgDropSuccess = false;
-
-    // 검색 캐시 정리
-    if (window.__fullDatasetForSearch) {
-        window.__fullDatasetForSearch = null;
-    }
-
-    // 스토리지 캐시 정리
-    StorageCache.invalidate();
-
-    // pendingFavicon 정리 (30초 이상 된 것)
-    chrome.storage.local.get(null, (result) => {
-        const keysToRemove = [];
-        for (const key of Object.keys(result)) {
-            if (key.startsWith('pendingFavicon_') && result[key].timestamp) {
-                if (Date.now() - result[key].timestamp > 30000) {
-                    keysToRemove.push(key);
-                }
-            }
-        }
-        if (keysToRemove.length > 0) {
-            chrome.storage.local.remove(keysToRemove);
-        }
-    });
-}
-
 let folderSize = null;
 async function renderFolderList() {
     try {
         // 로컬 스토리지에서 모든 데이터 싹 가져와야 됨
-        const allData = await StorageCache.getAll();
-        const folders = Object.values(allData).filter(d => d && d.Id && d.Id.startsWith('fol_'));
+        const allData = await getStorage(null);
+        const folders = Object.values(allData).filter(d => d.Id && d.Id.startsWith('fol_'));
         folderSize = folders.length;
         folders.sort((a, b) => a.SortNumber - b.SortNumber);
         const accordionStates = await getAccordionStates();
         const accordionUl = document.getElementById("folders-container").querySelector('ul.slds-accordion');
-
-        // DOM 정리 후 innerHTML 클리어
-        cleanupAccordionDOM();
         accordionUl.innerHTML = "";
-
-        // 검색 캐시 무효화
-        window.__fullDatasetForSearch = null;
         for(const folder of folders || []){
-        // 이벤트 위임 사용으로 개별 리스너 제거됨
         const li = createDom('li',['slds-accordion__list-item','slds-m-bottom_small'],{border : '1px solid #d8dde6', borderRadius: '12px'},{ draggable: true } );
+        li.addEventListener('dragstart',onFolderDragStart);
+        li.addEventListener('dragover',onFolderDragOver);
+        li.addEventListener('drop',onFolderDrop);
+        li.addEventListener('dragend', onFolderDragEnd);
         // slds-is-open
         const isOpen = accordionStates[folder.Id] !== undefined ? accordionStates[folder.Id] : true;
         const sectionClasses = ['slds-accordion__section'];
@@ -615,42 +234,48 @@ async function renderFolderList() {
     
         const accordionSummaryH2 = createDom('h2',['slds-accordion__summary-heading']);
         const accordionSummaryButton = createDom('button',['slds-button','slds-button_reset','slds-accordion__summary-action'],null,{'aria-controls' : folder.Id,'aria-expanded' : String(isOpen),'title' : 'Accordion summary'});
-        // 이벤트 위임 사용
-        const accordionSvg = createInlineIconSVG('switch', ['slds-accordion__summary-action-icon','slds-button__icon','slds-button__icon_left'],null,{'aria-hidden' : 'true', "pointer-events": "auto"});
+        accordionSummaryButton.addEventListener('click', onClickSectionIconOnly);        
+        const accordionSvg = createSVG(['slds-accordion__summary-action-icon','slds-button__icon','slds-button__icon_left'],null,{'aria-hidden' : 'true', "pointer-events": "auto"});
+        const accordionUse = createUse(null,null,null,{'xlink:href' : {namespace : XLINK_NS,value : './assets/icons/utility-sprite/svg/symbols.svg#switch'}});
 
         const accordionSpan = createDom('span',['slds-accordion__summary-content']);
         accordionSpan.textContent = folder.Name;
+        accordionSvg.appendChild(accordionUse);
         accordionSummaryButton.append(accordionSvg,accordionSpan);
         accordionSummaryH2.appendChild(accordionSummaryButton);
         accordionSummaryDiv.appendChild(accordionSummaryH2);
         // h2까지 세팅 완료
         // slds-is-open
         const dropDownDiv = createDom('div',['slds-dropdown-trigger','slds-dropdown-trigger_click']);
-        // 이벤트 위임 사용
+        dropDownDiv.addEventListener('click', onClickDropDownDiv);
         const showMoreButton = createDom('button',['slds-button','slds-button_icon','slds-button_icon-border-filled','slds-button_icon-x-small'],null,{'aria-haspopup':'true','title':'Show More'});
-        const showMoreSvg = createInlineIconSVG('down', ['slds-button__icon'],null,{'aria-hidden' : 'true'});
+        const showMoreSvg = createSVG(['slds-button__icon'],null,{'aria-hidden' : 'true'});
+        
+        const showMoreUse = createUse(null,null,null,{'xlink:href' : {namespace : XLINK_NS,value : './assets/icons/utility-sprite/svg/symbols.svg#down'}});
         const showMoreSpan = createDom('span',['slds-assistive-text']);
         showMoreSpan.textContent = 'Show More';
         const dropDownActionDiv=  createDom('div',['slds-dropdown','slds-dropdown_actions','slds-dropdown_right']);
         const dropDownActionUl = createDom('ul',['slds-dropdown__list'],null,{'role':'menu'});
         const dropwDownActionLiEdit = createDom('li',['slds-dropdown__item'],null,{'role':'presentation'});
-        // 이벤트 위임 사용
+        dropwDownActionLiEdit.addEventListener('click',onClickDropDownEdit);
         const dropwDownActionLiEditA = createDom('a',null,null,{'role' : 'menuitem','tabindex':'0'});
         const dropDownActionLiEditSpan = createDom('span',['slds-truncate'],null,{'title' : '편집'});
         dropDownActionLiEditSpan.textContent = '편집';
 
+        // dropDownActionLiEditSpan.addEventListener(dropDownActionLiEditSpan,onClickdropDownEditSpan);
         const dropDownActionLiOrgAdd = createDom('li',['slds-dropdown__item'],null,{'role' : 'presentation'});
         const dropDownActionLiOrgAddA = createDom('a',null,null,{'role' : 'menuitem','tabindex':'1'});
         const dropDownActionLiOrgAddSpan = createDom('span',['slds-truncate'],null,{'title' : '오그추가'});
-        // 이벤트 위임 사용
+        dropDownActionLiOrgAdd.addEventListener('click',onClickDropDownOrgAdd);
         dropDownActionLiOrgAddSpan.textContent = '오그추가';
         // button에 붙이자
+        showMoreSvg.appendChild(showMoreUse);
         showMoreButton.appendChild(showMoreSvg);
         // 폴더 삭제
         const dropDownActionLiFolderDelete = createDom('li',['slds-dropdown__item'],null,{'role' : 'presentation'});
         const dropDownActionAFolderDelete = createDom('a',null,null,{'role' : 'menuitem','tabindex':'1'});
         const dropDownActionSpanFolderDelete = createDom('span',['slds-truncate'],null,{'title' : '폴더 삭제'});
-        // 이벤트 위임 사용
+        dropDownActionLiFolderDelete.addEventListener('click',onClickDropDownFolderDelete);
         dropDownActionSpanFolderDelete.textContent = '폴더삭제';
         dropDownActionAFolderDelete.appendChild(dropDownActionSpanFolderDelete);
         dropDownActionLiFolderDelete.appendChild(dropDownActionAFolderDelete);
@@ -678,37 +303,52 @@ async function renderFolderList() {
         // const divAccordionContent = createDom('div',['slds-accordion__content','slds-grid','slds-m-top_small','slds-is-open'],{borderBottom : '1px solid rgba(128, 128, 128, 0.5)'},{'id' : folder.Id});
         // 해당 dom에 dropOver 이벤트 걸기
         const divAccordionContent = createDom('div',['slds-accordion__content','slds-m-top_small','slds-is-open'],null,{'id' : folder.Id});
-        // 이벤트 위임 사용
+        divAccordionContent.addEventListener('dragover', onContentDragOver);
+        divAccordionContent.addEventListener('drop', onContentDrop);
+        section.addEventListener('dragover', onSectionOrgDragOver);
+        section.addEventListener('drop', onSectionOrgDrop);
         section.appendChild(divAccordionContent);
         const orgs = (folder.OrgIds || []).filter(id => allData[id]).map(id => allData[id]);
         for(let ORG of orgs){
             // 각 오그를 감싸는 row div 생성 (이게 핵심!)
             // 해당 orgRow에 drag 허용
-            // 이벤트 위임 사용으로 개별 리스너 제거됨
             let orgRow = createDom('div', ['slds-grid', 'slds-p-vertical_x-small', 'org-row'],{
                 borderBottom: '1px solid rgba(128, 128, 128, 0.5)',
                 cursor: 'grab'
             },{draggable: true});
+            orgRow.addEventListener('click',onClickOrgRow);
+            orgRow.addEventListener('dragstart', onOrgDragStart);
+            orgRow.addEventListener('dragover', onOrgDragOver);
+            // orgRow.addEventListener('dragenter', onOrgDragEnter);
+            orgRow.addEventListener('dragleave', onOrgDragLeave);
+            orgRow.addEventListener('drop', onOrgDrop);
+            orgRow.addEventListener('dragend', onOrgDragEnd);
             orgRow.dataset.orgId = ORG.Id;
 
             let divOrgName = createDom('div',['slds-col','slds-size_9-of-12']);
             let pOrgName = createDom('p',null);
             pOrgName.textContent = ORG.Name;
             divOrgName.appendChild(pOrgName);
-            // ORG URL (이벤트 위임 사용)
+            // ORG URL
             let divOrgUrl = createDom('div',['slds-col','slds-size_1-of-12','org-action-icon']);
-            divOrgUrl.dataset.icon = 'logout';
-            let svgOrgUrl = createInlineIconSVG('logout', ['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer'} );
+            let svgOrgUrl = createSVG(['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer'} );
+            let useOrgUrl = createUse(null,null,null,{'xlink:href' : {namespace : XLINK_NS,value : './assets/icons/utility-sprite/svg/symbols.svg#logout'}});
+            svgOrgUrl.addEventListener('click',orgLinkClick);
+            svgOrgUrl.appendChild(useOrgUrl);
             divOrgUrl.appendChild(svgOrgUrl);
-            // ORG Edit (이벤트 위임 사용)
+            // ORG Edit
             let divOrgEdit = createDom('div',['slds-col','slds-size_1-of-12','org-action-icon']);
-            divOrgEdit.dataset.icon = 'edit';
-            let svgOrgEdit = createInlineIconSVG('edit', ['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer'});
+            let svgOrgEdit = createSVG(['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer'});
+            let useOrgEdit = createUse(null,null,null,{'xlink:href' : {namespace : XLINK_NS,value : './assets/icons/utility-sprite/svg/symbols.svg#edit'}});
+            svgOrgEdit.appendChild(useOrgEdit);
             divOrgEdit.appendChild(svgOrgEdit);
-            // ORG Delete (이벤트 위임 사용)
+            svgOrgEdit.addEventListener('click',onClickOrgEdit);
+            // ORG Delete
             let divOrgDelete = createDom('div',['slds-col','slds-size_1-of-12','org-action-icon']);
-            divOrgDelete.dataset.icon = 'delete';
-            let svgOrgDelete = createInlineIconSVG('delete', ['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer' });
+            let svgOrgDelete = createSVG(['slds-button__icon'],null,{'aria-hidden' : 'true',cursor: 'pointer' });
+            let useOrgDelete = createUse(null,null,null,{'xlink:href' : {namespace : XLINK_NS,value : './assets/icons/utility-sprite/svg/symbols.svg#delete'}});
+            svgOrgDelete.addEventListener('click',onClickOrgDelete);
+            svgOrgDelete.appendChild(useOrgDelete);
             divOrgDelete.appendChild(svgOrgDelete);
             // ***여기서 한 줄로 묶기***
             orgRow.append(divOrgName, divOrgUrl, divOrgEdit, divOrgDelete);
@@ -731,22 +371,11 @@ async function renderFolderList() {
     });
   }
 
-  // FLIP 애니메이션 헬퍼 (First-Last-Invert-Play) - 메모리 최적화 버전
+  // FLIP 애니메이션 헬퍼 (First-Last-Invert-Play)
   function flipAnimate(parent, selector) {
-    let items = Array.from(parent.querySelectorAll(selector));
-
-    // 뷰포트 내 요소만 애니메이션 적용 (성능 최적화)
-    if (items.length > 20) {
-        const viewportBottom = window.innerHeight;
-        items = items.filter(item => {
-            const rect = item.getBoundingClientRect();
-            return rect.top < viewportBottom && rect.bottom > 0;
-        });
-    }
-
+    const items = Array.from(parent.querySelectorAll(selector));
     const rects = new Map();
     items.forEach(item => rects.set(item, item.getBoundingClientRect()));
-
     return () => {
         const moved = [];
         items.forEach(item => {
@@ -760,14 +389,7 @@ async function renderFolderList() {
             item.style.transition = 'none';
             moved.push(item);
         });
-
-        // 메모리 정리: 이동 없으면 즉시 참조 해제
-        if (moved.length === 0) {
-            rects.clear();
-            items = null;
-            return;
-        }
-
+        if (moved.length === 0) return;
         void parent.offsetHeight;
         moved.forEach(item => {
             item.style.transition = 'transform 150ms ease';
@@ -777,12 +399,6 @@ async function renderFolderList() {
                 item.removeEventListener('transitionend', handler);
             }, { once: true });
         });
-
-        // 애니메이션 완료 후 메모리 정리
-        setTimeout(() => {
-            rects.clear();
-            items = null;
-        }, 200);
     };
   }
 
@@ -790,18 +406,15 @@ async function renderFolderList() {
   let folderDropDone = false;
   function onFolderDragStart(event){
     event.dataTransfer.effectAllowed = 'move';
-    // 이벤트 위임 호환: event.target에서 li 찾기
-    const li = event.target.closest('li.slds-accordion__list-item');
-    if (!li) return;
-    draggingFolderDragId = li.querySelector('section').dataset.folderId;
+    draggingFolderDragId = event.currentTarget.querySelector('section').dataset.folderId;
+    const li = event.currentTarget;
     requestAnimationFrame(() => li.classList.add('dragging'));
   }
   function onFolderDragOver(event){
     if(!draggingFolderDragId) return;
     event.preventDefault();
     const draggedLi = document.querySelector(`section[data-folder-id="${draggingFolderDragId}"]`)?.closest('li.slds-accordion__list-item');
-    // 이벤트 위임 호환: event.target에서 li 찾기
-    const targetLi = event.target.closest('li.slds-accordion__list-item');
+    const targetLi = event.currentTarget;
     if (!draggedLi || !targetLi || draggedLi === targetLi) return;
     const parent = targetLi.parentNode;
     clearFlipTransforms(parent, ':scope > li.slds-accordion__list-item');
@@ -848,8 +461,7 @@ async function renderFolderList() {
   let deleteFolderId = null;
   function onClickDropDownFolderDelete(event){
     // 폴더 삭제 모달 활성화
-    // 이벤트 위임 호환: event.target에서 요소 찾기
-    const rootSection = event.target.closest('.slds-accordion__section');
+    const rootSection = event.currentTarget.closest('.slds-accordion__section');
     deleteFolderId = rootSection.dataset.folderId;
     const orgDeleteConfirmModal = document.querySelector('#folder-delete-confirm-modal');
     orgDeleteConfirmModal.classList.remove('slds-hidden');
@@ -860,29 +472,41 @@ async function renderFolderList() {
   }
   function onClickFolderDeleteModalCancel(event){
     deleteFolderId = null;
-    closeModal(document.querySelector('#folder-delete-confirm-modal'), document.querySelector('#folder-delete-backdrop'));
+    const orgDeleteConfirmModal = document.querySelector('#folder-delete-confirm-modal');
+    orgDeleteConfirmModal.classList.remove('slds-fade-in-open');
+    orgDeleteConfirmModal.classList.add('slds-hidden');
+    const divEditBackdrop = document.querySelector('#folder-delete-backdrop');
+    divEditBackdrop.classList.remove('slds-backdrop_open');
+    clearUIState();
   }
   function onClickFolderDeleteModalX(event){
-    closeModal(document.querySelector('#folder-delete-confirm-modal'), document.querySelector('#folder-delete-backdrop'));
+    const orgDeleteConfirmModal = document.querySelector('#folder-delete-confirm-modal');
+    orgDeleteConfirmModal.classList.remove('slds-fade-in-open');
+    orgDeleteConfirmModal.classList.add('slds-hidden');
+    const divEditBackdrop = document.querySelector('#folder-delete-backdrop');
+    divEditBackdrop.classList.remove('slds-backdrop_open');
+    clearUIState();
   }
   async function onClickFolderDeleteModalDelete(event){
     // 폴더에 속한 ORG 아이템도 함께 삭제
     const folder = (await getStorage(deleteFolderId))[deleteFolderId];
     const orgIdsToDelete = folder?.OrgIds || [];
     await deleteStorageKeys([...orgIdsToDelete, deleteFolderId]);
-    closeModal(document.querySelector('#folder-delete-confirm-modal'), document.querySelector('#folder-delete-backdrop'));
+    const orgDeleteConfirmModal = document.querySelector('#folder-delete-confirm-modal');
+    orgDeleteConfirmModal.classList.remove('slds-fade-in-open');
+    orgDeleteConfirmModal.classList.add('slds-hidden');
+    const divEditBackdrop = document.querySelector('#folder-delete-backdrop');
+    divEditBackdrop.classList.remove('slds-backdrop_open');
+    clearUIState();
     renderFolderList();
   }
 
   function onClickSectionIconOnly(event) {
     event.stopPropagation();
-    // 이벤트 위임 호환: event.target에서 요소 찾기
-    const button = event.target.closest('.slds-accordion__summary-action');
-    const section = event.target.closest('.slds-accordion__section');
-    if (!section || !button) return;
+    const section = event.currentTarget.closest('.slds-accordion__section');
     const nowOpen = !section.classList.contains('slds-is-open');
     section.classList.toggle('slds-is-open', nowOpen);
-    button.setAttribute('aria-expanded', String(nowOpen));
+    event.currentTarget.setAttribute('aria-expanded', String(nowOpen));
     saveAccordionStates();
   }
 let draggingOrgId = null;
@@ -892,9 +516,7 @@ let orgDropSuccess = false;
 function onOrgDragStart(event) {
     event.stopPropagation();
     event.dataTransfer.effectAllowed = 'move';
-    // 이벤트 위임 호환: event.target에서 요소 찾기
-    const orgRow = event.target.closest('.org-row');
-    if (!orgRow) return;
+    const orgRow = event.currentTarget.closest('.org-row');
     draggingOrgId = orgRow.dataset.orgId;
     draggingFolderId = orgRow.closest('section.slds-accordion__section').dataset.folderId;
     requestAnimationFrame(() => orgRow.classList.add('dragging'));
@@ -904,8 +526,7 @@ function onOrgDragOver(event) {
     if (!draggingOrgId) return;
     event.preventDefault();
     event.stopPropagation();
-    // 이벤트 위임 호환: event.target에서 요소 찾기
-    const orgRow = event.target.closest('.org-row');
+    const orgRow = event.currentTarget.closest('.org-row');
     if (!orgRow) return;
     const draggedRow = document.querySelector(`.org-row[data-org-id="${draggingOrgId}"]`);
     if (!draggedRow || draggedRow === orgRow) return;
@@ -988,9 +609,7 @@ function onContentDragOver(event) {
     if (!draggingOrgId) return;
     event.preventDefault();
     event.stopPropagation();
-    // 이벤트 위임 호환: event.target에서 요소 찾기
-    const targetContent = event.target.closest('.slds-accordion__content');
-    if (!targetContent) return;
+    const targetContent = event.currentTarget;
     const draggedRow = document.querySelector(`.org-row[data-org-id="${draggingOrgId}"]`);
     if (!draggedRow) return;
     if (draggedRow.parentNode !== targetContent) {
@@ -1015,9 +634,7 @@ function onContentDrop(event) {
 function onSectionOrgDragOver(event) {
     if (!draggingOrgId) return;
     event.preventDefault();
-    // 이벤트 위임 호환: event.target에서 요소 찾기
-    const section = event.target.closest('section.slds-accordion__section');
-    if (!section) return;
+    const section = event.currentTarget;
     if (!section.classList.contains('slds-is-open')) {
         section.classList.add('slds-is-open');
         saveAccordionStates();
@@ -1044,7 +661,12 @@ function onSectionOrgDrop(event) {
     orgDropSuccess = true;
 }
 async function onClickOrgDeleteCancel(event){
-    closeModal(event.currentTarget.closest('#org-delete-confirm-modal'), document.querySelector('#org-delete-backdrop'));
+    const orgDeleteConfirmSection =event.currentTarget.closest('#org-delete-confirm-modal');
+    const divEditBackdrop = document.querySelector('#org-delete-backdrop');
+    orgDeleteConfirmSection.classList.add('slds-hidden');
+    orgDeleteConfirmSection.classList.remove('slds-fade-in-open');
+    divEditBackdrop.classList.remove('slds-backdrop_open');
+    clearUIState();
 }
 async function onClickOrgDeleteConfirm(event){
     // ORG 아이템 삭제
@@ -1053,7 +675,12 @@ async function onClickOrgDeleteConfirm(event){
     const folder = (await getStorage(targetFolderId))[targetFolderId];
     folder.OrgIds = (folder.OrgIds || []).filter(id => id !== targetOrgId);
     await setStorage(targetFolderId,folder);
-    closeModal(document.querySelector('#org-delete-confirm-modal'), document.querySelector('#org-delete-backdrop'));
+    const orgDeleteConfirmSection = document.querySelector('#org-delete-confirm-modal');
+    const divEditBackdrop = document.querySelector('#org-delete-backdrop');
+    orgDeleteConfirmSection.classList.add('slds-hidden');
+    orgDeleteConfirmSection.classList.remove('slds-fade-in-open');
+    divEditBackdrop.classList.remove('slds-backdrop_open');
+    clearUIState();
     renderFolderList();
 }
   async function onClickOrgDelete(event){
@@ -1064,11 +691,11 @@ async function onClickOrgDeleteConfirm(event){
     // backDrop open
     const divOrgModalBackdrop = document.querySelector('#org-delete-backdrop');
     divOrgModalBackdrop.classList.add('slds-backdrop_open');
-    //  // 1. 이벤트 위임 호환: event.target에서 가장 가까운 section 찾기
-     const section = event.target.closest('section.slds-accordion__section');
+    //  // 1. orgLink(=currentTarget)에서 가장 가까운 section 찾기
+     const section = event.currentTarget.closest('section.slds-accordion__section');
     //  // 2. folderId 읽기
      const folderId = section ? section.dataset.folderId : null;
-     const orgRow = event.target.closest('div.org-row');
+     const orgRow = event.currentTarget.closest('div.org-row');
      const orgId = orgRow.dataset.orgId;
      targetFolderId = folderId;
      targetOrgId = orgId;
@@ -1076,11 +703,10 @@ async function onClickOrgDeleteConfirm(event){
   }
   async function onClickOrgEdit(event){
     try {
-        // 이벤트 위임 호환: event.target에서 요소 찾기
-        const section = event.target.closest('section.slds-accordion__section');
+        const section = event.currentTarget.closest('section.slds-accordion__section');
         // 2. folderId 읽기
         const folderId = section ? section.dataset.folderId : null;
-        const orgRow = event.target.closest('div.org-row');
+        const orgRow = event.currentTarget.closest('div.org-row');
         const orgId = orgRow.dataset.orgId;
         targetOrgId = orgId;
         targetFolderId = folderId;
@@ -1095,14 +721,6 @@ async function onClickOrgDeleteConfirm(event){
         if (!targetOrg.FaviconColor) {
             targetOrg.FaviconColor = '#0070d2';
         }
-        // TabGroupEnabled 필드가 없으면 추가 (하위 호환성)
-        if (targetOrg.TabGroupEnabled === undefined) {
-            targetOrg.TabGroupEnabled = false;
-        }
-        // TabGroupColor 필드가 없으면 추가 (하위 호환성)
-        if (!targetOrg.TabGroupColor) {
-            targetOrg.TabGroupColor = 'blue';
-        }
     const sectionOrgModal = document.querySelector('#org-modal');
     // 그 안에서 텍스트 span 찾아서 값 가져오기
     sectionOrgModal.dataset.folderId = folderId;
@@ -1110,12 +728,18 @@ async function onClickOrgDeleteConfirm(event){
     sectionOrgModal.querySelector('#org-type-value').dataset.value = targetOrg.OrgType;
     sectionOrgModal.querySelector('#org-type-value').textContent = getOrgTypeLabel(targetOrg.OrgType);
     sectionOrgModal.querySelector('#org-username').value = targetOrg.UserName;
-    sectionOrgModal.querySelector('#password').value = targetOrg.Password || '';
-    sectionOrgModal.querySelector('#security-token').value = targetOrg.SecurityToken || '';
+    let decryptedPw = '';
+    try {
+        decryptedPw = await decryptPassword(targetOrg.Password);
+    } catch (decryptErr) {
+        console.error('비밀번호 복호화 실패:', decryptErr);
+        // 암호화 키 손실 시 원본 표시 불가 → 빈 값 처리
+        decryptedPw = '';
+        showToast('비밀번호를 복호화할 수 없습니다. 다시 입력해주세요.', 'error');
+    }
+    sectionOrgModal.querySelector('#password').value = decryptedPw;
     sectionOrgModal.querySelector('#org-description').value = targetOrg.Description;
     setFaviconColor(targetOrg.FaviconColor || '#0070d2');
-    setTabGroupEnabled(targetOrg.TabGroupEnabled || false);
-    setTabGroupColor(targetOrg.TabGroupColor || 'blue');
     // 소속 폴더 select 채우기
     await populateFolderSelect(folderId);
     // 글자 수 카운터 갱신
@@ -1137,20 +761,26 @@ async function onClickOrgDeleteConfirm(event){
 function onClickOrgRow(event){
     event.stopPropagation();
 }
+function onClickSection(event){
+    event.stopPropagation();
+    const target = event.currentTarget.closest('.slds-accordion__section');
+    if (target.classList.contains('slds-is-open')) {
+        target.classList.remove('slds-is-open');
+    } else {
+        target.classList.add('slds-is-open');
+    } 
+}
 function onClickDropDownDiv(event){
     event.stopPropagation();
-    // 이벤트 위임 호환: event.target에서 요소 찾기
-    const target = event.target.closest('.slds-dropdown-trigger');
-    if (!target) return;
+    const target = event.currentTarget;
     if(target.classList.contains('slds-is-open')){
         target.classList.remove('slds-is-open');
     }else{
         target.classList.add('slds-is-open');
     }
 }
-async function onClickDropDownEdit(event){
-    // 이벤트 위임 호환: event.target에서 요소 찾기
-    const rootSection = event.target.closest('.slds-accordion__section');
+function onClickDropDownEdit(event){
+    const rootSection = event.currentTarget.closest('.slds-accordion__section');
     const folderId = rootSection.dataset.folderId;
     // 그 안에서 텍스트 span 찾아서 값 가져오기
     const summarySpan = rootSection.querySelector('.slds-accordion__summary-content');
@@ -1159,7 +789,7 @@ async function onClickDropDownEdit(event){
     sectionModal.dataset.folderId = folderId;
     const inputFolderName = sectionModal.querySelector('#folder-name');
     // input에 folder set
-    if(folderName) inputFolderName.value = folderName;
+    if(folderName) inputFolderName.value = folderName; 
     // modal open
     sectionModal.classList.remove('slds-hidden');
     sectionModal.classList.add('slds-fade-in-open');
@@ -1171,16 +801,26 @@ async function onClickDropDownEdit(event){
 function onClickFolderModalX(event){
     const section =event.currentTarget.closest('#folder-edit-modal');
     const divEditBackdrop = document.querySelector('#folder-edit-backdrop');
-    document.querySelector('#folder-name').value = '';
-    clearFormErrors(section);
-    closeModal(section, divEditBackdrop);
+    const folderName = document.querySelector('#folder-name');
+    folderName.value = '';
+    section.querySelectorAll('.slds-has-error').forEach(el => el.classList.remove('slds-has-error'));
+    section.querySelectorAll('.slds-form-element__help').forEach(el => el.remove());
+    section.classList.add('slds-hidden');
+    section.classList.remove('slds-fade-in-open');
+    divEditBackdrop.classList.remove('slds-backdrop_open');
+    clearUIState();
 }
 function onClickFolderModalClose(event){
     const section = event.currentTarget.closest('#folder-edit-modal');
     const divEditBackdrop = document.querySelector('#folder-edit-backdrop');
-    document.querySelector('#folder-name').value = '';
-    clearFormErrors(section);
-    closeModal(section, divEditBackdrop);
+    const folderName = document.querySelector('#folder-name');
+    folderName.value = '';
+    section.querySelectorAll('.slds-has-error').forEach(el => el.classList.remove('slds-has-error'));
+    section.querySelectorAll('.slds-form-element__help').forEach(el => el.remove());
+    section.classList.add('slds-hidden');
+    section.classList.remove('slds-fade-in-open');
+    divEditBackdrop.classList.remove('slds-backdrop_open');
+    clearUIState();
 }
 async function onClickFolderSave(event){
     // folder-modal-add-button
@@ -1189,8 +829,28 @@ async function onClickFolderSave(event){
     const folderModal = event.currentTarget.closest('#folder-edit-modal');    
     const folderId = folderModal.dataset.folderId;
     const inputValue = folderModal.querySelector('input').value;
-    if (!validateRequired(inputValue, '#folder-name-form', '#folder-name-form', '폴더 이름을 입력해 주세요.')) return;
-    clearFormErrors(folderModal);
+    let isRequired = false;
+    if(inputValue == undefined || inputValue == null || inputValue ==''){
+        if(!isRequired) isRequired = true;
+        const folderNameDiv = document.querySelector('#folder-name-form');
+        if(!folderNameDiv.classList.contains('slds-has-error')){
+            const folderNameForm = document.querySelector('#folder-name-form');
+            folderNameForm.classList.add('slds-has-error');
+            const errorMessage = createDom('div',['slds-form-element__help']);
+            errorMessage.textContent = '폴더 이름을 입력해 주세요.';
+            folderNameForm.appendChild(errorMessage);
+        }
+    }else{
+        const folderNameDiv = document.querySelector('#folder-name-form');
+        const folderNameForm = document.querySelector('#folder-name-form');
+        if(folderNameDiv.classList.contains('slds-has-error')){
+            folderNameDiv.classList.remove('slds-has-error');
+            folderNameForm.querySelector('.slds-form-element__help').remove();
+        }
+    }
+    if(isRequired) return;
+    folderModal.querySelectorAll('.slds-has-error').forEach(el => el.classList.remove('slds-has-error'));
+    folderModal.querySelectorAll('.slds-form-element__help').forEach(el => el.remove());
     // // edit
     if(folderId){
         const listSection = document.querySelector(`[data-folder-id="${folderId}"]`);
@@ -1205,39 +865,41 @@ async function onClickFolderSave(event){
         const folder = result[folderId];
         folder.Name = inputValue;
         await setStorage(folderId,folder);
-        closeModal(section, divEditBackdrop);
+        section.classList.add('slds-hidden');
+        section.classList.remove('slds-fade-in-open');
+        divEditBackdrop.classList.remove('slds-backdrop_open');
+        clearUIState();
     }else{ // 새로 생성
         // 폴더 수 제한 체크
-        const allFolders = Object.values(await StorageCache.getAll()).filter(d => d && d.Id && d.Id.startsWith('fol_'));
+        const allFolders = Object.values(await getStorage(null)).filter(d => d.Id && d.Id.startsWith('fol_'));
         if (allFolders.length >= MAX_FOLDERS) {
-            showToast(`폴더는 최대 ${MAX_FOLDERS}개까지 생성할 수 있습니다.`);
+            showToast('폴더는 최대 ' + MAX_FOLDERS + '개까지 생성할 수 있습니다.');
             return;
         }
         const inputValue = folderModal.querySelector('input').value;
         folderModal.querySelector('input').value = '';
-        const folder = new Folder(`fol_${generateRandomId(12)}`,[],inputValue,folderSize+1);
+        const folder = new Folder('fol_'+generateRandomId(12),[],inputValue,folderSize+1);
 
         await setStorage(folder.Id,folder);
-        closeModal(section, divEditBackdrop);
+        section.classList.add('slds-hidden');
+        section.classList.remove('slds-fade-in-open');
+        divEditBackdrop.classList.remove('slds-backdrop_open');
+        clearUIState();
         renderFolderList();
     }
     
 }
 async function onClickGroundFolderAdd(event){
     // 폴더 수 제한 체크
-    const allData = Object.values(await StorageCache.getAll());
-    const folderCount = allData.filter(d => d && d.Id && d.Id.startsWith('fol_')).length;
+    const allData = Object.values(await getStorage(null));
+    const folderCount = allData.filter(d => d.Id && d.Id.startsWith('fol_')).length;
     if (folderCount >= MAX_FOLDERS) {
-        showToast(`폴더는 최대 ${MAX_FOLDERS}개까지 생성할 수 있습니다.`);
+        showToast('폴더는 최대 ' + MAX_FOLDERS + '개까지 생성할 수 있습니다.');
         return;
     }
     const section = document.querySelector('#folder-edit-modal');
     section.dataset.folderId = '';
     // modal open
-    // 새로 만들기이므로 반드시 초기화
-    section.dataset.folderId = '';   // ← 이게 중요! (수정 분기 타지 않게)
-    const input = section.querySelector('#folder-name');
-    input.value = '';
     section.classList.remove('slds-hidden');
     section.classList.add('slds-fade-in-open');
     // backDrop open
@@ -1248,8 +910,7 @@ async function onClickGroundFolderAdd(event){
 async function onClickDropDownOrgAdd(event){
     try {
         const sectionOrgModal = document.querySelector('#org-modal');
-        // 이벤트 위임 호환: event.target에서 요소 찾기
-        const rootSection = event.target.closest('.slds-accordion__section');
+        const rootSection = event.currentTarget.closest('.slds-accordion__section');
         const folderId = rootSection.dataset.folderId;
 
         if (!folderId) {
@@ -1257,19 +918,22 @@ async function onClickDropDownOrgAdd(event){
             return;
         }
 
-        // 전체 오그 수 제한 체크
-        const totalOrgs = await getTotalOrgCount();
-        if (totalOrgs >= MAX_TOTAL_ORGS) {
-            showToast(`오그는 최대 ${MAX_TOTAL_ORGS}개까지 생성할 수 있습니다.`);
+        // 오그 수 제한 체크
+        const folderData = await getStorage(folderId);
+        const folder = folderData[folderId];
+
+        if (!folder) {
+            showToast('폴더 정보를 불러올 수 없습니다.');
+            return;
+        }
+
+        if ((folder.OrgIds || []).length >= MAX_ORGS_PER_FOLDER) {
+            showToast('폴더당 오그는 최대 ' + MAX_ORGS_PER_FOLDER + '개까지 생성할 수 있습니다.');
             return;
         }
         const sectionModal = document.querySelector('#org-modal');
         sectionModal.dataset.folderId = folderId;
         targetOrgId = null;
-        // 새 오그 추가 시 기본값 설정
-        setFaviconColor('#0070d2');
-        setTabGroupEnabled(false);
-        setTabGroupColor('blue');
         // 소속 폴더 select 채우기
         await populateFolderSelect(folderId);
         // modal open
@@ -1307,20 +971,26 @@ function onClickUlOrgType(event){
     saveUIState();
 }
 function onClickButtonOrgModalX(event){
+    const divOrgModal =event.currentTarget.closest('#org-modal');
+    const divOrgBackdrop = document.querySelector('#add-org-backdrop');
     const sectionOrgModal = event.currentTarget.closest('#org-modal');
     sectionOrgModal.querySelector('#org-name').value = '';
     sectionOrgModal.querySelector('#org-type-value').dataset.value = '';
     sectionOrgModal.querySelector('#org-type-value').textContent = '선택해주세요.';
     sectionOrgModal.querySelector('#org-username').value = '';
     sectionOrgModal.querySelector('#password').value = '';
-    sectionOrgModal.querySelector('#security-token').value = '';
     sectionOrgModal.querySelector('#org-description').value = '';
     setFaviconColor('#0070d2');
     const descCount = document.querySelector('#org-description-count');
     if (descCount) descCount.textContent = '0 / 1,000';
     targetOrgId = null;
-    clearFormErrors(sectionOrgModal);
-    closeModal(sectionOrgModal, document.querySelector('#add-org-backdrop'));
+
+    sectionOrgModal.querySelectorAll('.slds-has-error').forEach(el => el.classList.remove('slds-has-error'));
+    sectionOrgModal.querySelectorAll('.slds-form-element__help').forEach(el => el.remove());
+    divOrgModal.classList.add('slds-hidden');
+    divOrgModal.classList.remove('slds-fade-in-open');
+    divOrgBackdrop.classList.remove('slds-backdrop_open');
+    clearUIState();
 }
 function onClickButtonOrgModalClose(event){
     const sectionOrgModal = event.currentTarget.closest('#org-modal');
@@ -1329,19 +999,26 @@ function onClickButtonOrgModalClose(event){
     sectionOrgModal.querySelector('#org-type-value').textContent = '선택해주세요.';
     sectionOrgModal.querySelector('#org-username').value = '';
     sectionOrgModal.querySelector('#password').value = '';
-    sectionOrgModal.querySelector('#security-token').value = '';
     sectionOrgModal.querySelector('#org-description').value = '';
     setFaviconColor('#0070d2');
     const descCount = document.querySelector('#org-description-count');
     if (descCount) descCount.textContent = '0 / 1,000';
     targetOrgId = null;
-    clearFormErrors(sectionOrgModal);
-    closeModal(sectionOrgModal, document.querySelector('#add-org-backdrop'));
+    sectionOrgModal.querySelectorAll('.slds-has-error').forEach(el => el.classList.remove('slds-has-error'));
+    sectionOrgModal.querySelectorAll('.slds-form-element__help').forEach(el => el.remove());
+    const divOrgBackdrop = document.querySelector('#add-org-backdrop');
+
+    sectionOrgModal.classList.add('slds-hidden');
+    sectionOrgModal.classList.remove('slds-fade-in-open');
+    divOrgBackdrop.classList.remove('slds-backdrop_open');
+    clearUIState();
 }
 async function onClickOrgModalSave(event){
     try {
+        console.log('onClickOrgModalSave run');
         const sectionOrgModal = event.currentTarget.closest('#org-modal');
         const folderId = sectionOrgModal.dataset.folderId;
+        console.log('folderId :: '+folderId);
 
         if (!folderId) {
             showToast('폴더 정보가 없습니다. 다시 시도해주세요.');
@@ -1356,60 +1033,105 @@ async function onClickOrgModalSave(event){
             return;
         }
 
+        console.log('folder');
+        console.log(JSON.stringify(folder));
         const orgName = sectionOrgModal.querySelector('#org-name').value;
     const orgType = sectionOrgModal.querySelector('#org-type-value').dataset.value;
     const userName = sectionOrgModal.querySelector('#org-username').value;
     const password = sectionOrgModal.querySelector('#password').value;
-    const securityToken = sectionOrgModal.querySelector('#security-token').value;
     const description = sectionOrgModal.querySelector('#org-description').value;
-    let valid = true;
-    if (!validateRequired(orgName, '#org-name-div', '#org-name-form', '오그 이름을 입력해 주세요.')) valid = false;
-    if (!validateRequired(orgType, '#combobox-div', '#org-type-form', '오그 유형을 선택해 주세요.')) valid = false;
-    if (!validateRequired(userName, '#user-name-div', '#user-name-form', '사용자 이름을 입력해 주세요.')) valid = false;
-    if (!validateRequired(password, '#password-div', '#password-form', '비밀번호를 입력해 주세요.')) valid = false;
-    if (!valid) return;
-    clearFormErrors(sectionOrgModal);
+    let isRequired = false;
+    if(orgName == undefined || orgName == null || orgName ==''){
+        const orgNameDiv = document.querySelector('#org-name-div');
+        if(!orgNameDiv.classList.contains('slds-has-error')){
+            const orgNameForm = document.querySelector('#org-name-form');
+            orgNameDiv.classList.add('slds-has-error');
+            const errorMessage = createDom('div',['slds-form-element__help']);
+            errorMessage.textContent = '오그 이름을 입력해 주세요.';
+            orgNameForm.appendChild(errorMessage);
+            if(!isRequired) isRequired = true;
+        }
+    }else{
+        const orgNameDiv = document.querySelector('#org-name-div');
+        const orgNameForm = document.querySelector('#org-name-form');
+        if(orgNameDiv.classList.contains('slds-has-error')){
+            orgNameDiv.classList.remove('slds-has-error');
+            orgNameForm.querySelector('.slds-form-element__help').remove();
+        }
+    }
+    if(orgType == undefined || orgType == null || orgType == ''){
+        if(!isRequired) isRequired = true;
+        const orgTypeDiv = document.querySelector('#combobox-div');
+        if(!orgTypeDiv.classList.contains('slds-has-error')){
+            const orgTypeForm = document.querySelector('#org-type-form');
+            orgTypeDiv.classList.add('slds-has-error');
+            const errorMessage = createDom('div',['slds-form-element__help']); // TODO edit onclick이벤트 필요
+            errorMessage.textContent = '오그 유형을 선택해 주세요.';
+            orgTypeForm.appendChild(errorMessage);
+        }
+    }else{
+        const orgTypeDiv = document.querySelector('#combobox-div');
+        const orgTypeForm = document.querySelector('#org-type-form');
+        if(orgTypeDiv.classList.contains('slds-has-error')){
+            orgTypeDiv.classList.remove('slds-has-error');
+            orgTypeForm.querySelector('.slds-form-element__help').remove();
+        }
+    }
+    if(userName == undefined || userName == null || userName ==''){
+        if(!isRequired) isRequired = true;
+        const userNameDiv = document.querySelector('#user-name-div');
+        if(!userNameDiv.classList.contains('slds-has-error')){
+            const userNameForm = document.querySelector('#user-name-form');
+            userNameDiv.classList.add('slds-has-error');
+            const errorMessage = createDom('div',['slds-form-element__help']);
+            errorMessage.textContent = '사용자 이름을 입력해 주세요.';
+            userNameForm.appendChild(errorMessage);
+        }
+    }else{
+        const userNameDiv = document.querySelector('#user-name-div');
+        const userNameForm = document.querySelector('#user-name-form');
+        if(userNameDiv.classList.contains('slds-has-error')){
+            userNameDiv.classList.remove('slds-has-error');
+            userNameForm.querySelector('.slds-form-element__help').remove();
+        }
+    }
+    if(password == undefined || password == null || password == ''){
+        if(!isRequired) isRequired = true;
+        const passwordDiv = document.querySelector('#password-div');
+        if(!passwordDiv.classList.contains('slds-has-error')){
+            const passwordForm = document.querySelector('#password-form');
+            passwordDiv.classList.add('slds-has-error');
+            const errorMessage = createDom('div',['slds-form-element__help']);
+            errorMessage.textContent = '비밀번호를 입력해 주세요.';
+            passwordForm.appendChild(errorMessage);
+        }
+    }else{
+        const passwordDiv = document.querySelector('#password-div');
+        const passwordForm = document.querySelector('#password-form');
+        if(passwordDiv.classList.contains('slds-has-error')){
+            passwordDiv.classList.remove('slds-has-error');
+            passwordForm.querySelector('.slds-form-element__help').remove();
+        }
+    }
+    if(isRequired) return;
+    sectionOrgModal.querySelectorAll('.slds-has-error').forEach(el => el.classList.remove('slds-has-error'));
+    sectionOrgModal.querySelectorAll('.slds-form-element__help').forEach(el => el.remove());
     const url = getOrgLoginUrl(orgType);
     const selectedFolderId = document.querySelector('#org-folder-select')?.value || folderId;
     const faviconColor = document.querySelector('#org-favicon-color').value;
-    const tabGroupEnabledCheckbox = document.querySelector('#tab-group-enabled');
-    const tabGroupEnabled = tabGroupEnabledCheckbox ? tabGroupEnabledCheckbox.checked : false;
-    const tabGroupColor = document.querySelector('#tab-group-color').value || 'blue';
+    const encryptedPassword = await encryptPassword(password);
 // edit
     if(targetOrgId){
-        const org = new ORG(targetOrgId,selectedFolderId,orgName,orgType,url,userName,password,description,faviconColor,securityToken,tabGroupEnabled,tabGroupColor);
-        // ORG 객체를 plain object로 변환하여 저장
-        const orgData = {
-            Id: org.Id,
-            FolderId: org.FolderId,
-            Name: org.Name,
-            OrgType: org.OrgType,
-            URL: org.URL,
-            UserName: org.UserName,
-            Password: org.Password,
-            Description: org.Description,
-            FaviconColor: org.FaviconColor,
-            SecurityToken: org.SecurityToken,
-            TabGroupEnabled: org.TabGroupEnabled,
-            TabGroupColor: org.TabGroupColor
-        };
-        // Chrome Storage에 직접 저장
-        await new Promise((resolve, reject) => {
-            chrome.storage.sync.set({ [targetOrgId]: orgData }, () => {
-                if (chrome.runtime.lastError) {
-                    reject(chrome.runtime.lastError);
-                } else {
-                    resolve();
-                }
-            });
-        });
-
-        // 캐시 무효화
-        StorageCache.invalidate();
-
+        const org = new ORG(targetOrgId,selectedFolderId,orgName,orgType,url,userName,encryptedPassword,description,faviconColor);
+        // ORG 아이템 저장
+        await setStorage(targetOrgId, org);
         if (selectedFolderId !== folderId) {
             // 다른 폴더로 이동
             const newFolder = (await getStorage(selectedFolderId))[selectedFolderId];
+            if ((newFolder.OrgIds || []).length >= MAX_ORGS_PER_FOLDER) {
+                showToast('이동할 폴더의 오그 수가 최대 한도(' + MAX_ORGS_PER_FOLDER + '개)에 도달했습니다.');
+                return;
+            }
             // 기존 폴더에서 제거
             folder.OrgIds = (folder.OrgIds || []).filter(id => id !== targetOrgId);
             await setStorage(folderId, folder);
@@ -1423,45 +1145,14 @@ async function onClickOrgModalSave(event){
         const targetFolder = selectedFolderId !== folderId
             ? (await getStorage(selectedFolderId))[selectedFolderId]
             : folder;
-        // 전체 오그 수 제한 체크
-        const totalOrgs = await getTotalOrgCount();
-        if (totalOrgs >= MAX_TOTAL_ORGS) {
-            showToast(`오그는 최대 ${MAX_TOTAL_ORGS}개까지 생성할 수 있습니다.`);
+        if ((targetFolder.OrgIds || []).length >= MAX_ORGS_PER_FOLDER) {
+            showToast('폴더당 오그는 최대 ' + MAX_ORGS_PER_FOLDER + '개까지 생성할 수 있습니다.');
             return;
         }
-        const orgId = `org_${generateRandomId(12)}`;
-        const org = new ORG(orgId,selectedFolderId,orgName,orgType,url,userName,password,description,faviconColor,securityToken,tabGroupEnabled,tabGroupColor);
-
-        // ORG 객체를 plain object로 변환하여 저장
-        const orgData = {
-            Id: org.Id,
-            FolderId: org.FolderId,
-            Name: org.Name,
-            OrgType: org.OrgType,
-            URL: org.URL,
-            UserName: org.UserName,
-            Password: org.Password,
-            Description: org.Description,
-            FaviconColor: org.FaviconColor,
-            SecurityToken: org.SecurityToken,
-            TabGroupEnabled: org.TabGroupEnabled,
-            TabGroupColor: org.TabGroupColor
-        };
-
-        // Chrome Storage에 직접 저장
-        await new Promise((resolve, reject) => {
-            chrome.storage.sync.set({ [orgId]: orgData }, () => {
-                if (chrome.runtime.lastError) {
-                    reject(chrome.runtime.lastError);
-                } else {
-                    resolve();
-                }
-            });
-        });
-
-        // 캐시 무효화
-        StorageCache.invalidate();
-
+        const orgId ='org_'+ generateRandomId(12);
+        const org = new ORG(orgId,selectedFolderId,orgName,orgType,url,userName,encryptedPassword,description,faviconColor);
+        // ORG 아이템 별도 저장
+        await setStorage(orgId, org);
         // 폴더의 OrgIds에 추가
         targetFolder.OrgIds = targetFolder.OrgIds || [];
         targetFolder.OrgIds.push(orgId);
@@ -1472,24 +1163,21 @@ async function onClickOrgModalSave(event){
     sectionOrgModal.querySelector('#org-type-value').textContent = '선택해주세요.';
     sectionOrgModal.querySelector('#org-username').value = '';
     sectionOrgModal.querySelector('#password').value = '';
-    sectionOrgModal.querySelector('#security-token').value = '';
     sectionOrgModal.querySelector('#org-description').value = '';
     setFaviconColor('#0070d2');
-    setTabGroupEnabled(false);
-    setTabGroupColor('blue');
     const descCountSave = document.querySelector('#org-description-count');
     if (descCountSave) descCountSave.textContent = '0 / 1,000';
+    const divOrgModal =document.querySelector('#org-modal');
+    const divOrgBackdrop = document.querySelector('#add-org-backdrop');
+    divOrgModal.classList.add('slds-hidden');
+    divOrgModal.classList.remove('slds-fade-in-open');
+    divOrgBackdrop.classList.remove('slds-backdrop_open');
     targetOrgId = null;
-    closeModal(document.querySelector('#org-modal'), document.querySelector('#add-org-backdrop'));
-    StorageCache.invalidate();
+    clearUIState();
     renderFolderList();
     } catch (error) {
         console.error('오그 저장 중 오류:', error);
-        if (error.message && (error.message.includes('QUOTA') || error.message.includes('quota') || error.message.includes('exceeded'))) {
-            showToast('저장 용량을 초과했습니다. 오그나 폴더의 개수를 줄이거나 설명을 줄여주세요.', 'error');
-        } else {
-            showToast(`오그 저장 중 오류가 발생했습니다: ${error.message}`);
-        }
+        showToast('오그 저장 중 오류가 발생했습니다: ' + error.message);
     }
 }
 function setFaviconColor(color) {
@@ -1498,66 +1186,24 @@ function setFaviconColor(color) {
     const icon = document.querySelector('#favicon-cloud-icon path');
     if (icon) icon.setAttribute('fill', color);
 }
-function setTabGroupColor(color) {
-    const input = document.querySelector('#tab-group-color');
-    if (input) input.value = color;
-    const picker = document.querySelector('#tab-group-color-picker');
-    if (picker) {
-        picker.querySelectorAll('.tab-group-color-btn').forEach(btn => {
-            btn.classList.toggle('selected', btn.dataset.color === color);
-        });
-    }
-}
-function setTabGroupEnabled(enabled) {
-    const checkbox = document.querySelector('#tab-group-enabled');
-    if (checkbox) checkbox.checked = enabled;
-    const section = document.querySelector('#advanced-settings-section');
-    const toggle = document.querySelector('#advanced-settings-toggle');
-    if (section && toggle) {
-        // 체크박스 상태에 따라 아코디언 열기/닫기
-        section.classList.toggle('slds-is-open', enabled);
-        toggle.setAttribute('aria-expanded', String(enabled));
-    }
-    updateTabGroupColorPickerState(enabled);
-}
-function updateTabGroupColorPickerState(enabled) {
-    const picker = document.querySelector('#tab-group-color-picker');
-    const container = document.querySelector('#tab-group-color-container');
-    if (picker) {
-        picker.classList.toggle('disabled', !enabled);
-    }
-    if (container) {
-        container.classList.toggle('disabled', !enabled);
-    }
-}
 function getOrgLoginUrl(orgType){
-    if(orgType === 'sandbox' || orgType === '샌드박스') return 'https://test.salesforce.com';
-    return 'https://login.salesforce.com';
+    let result;
+    if(orgType == 'production' || orgType == '운영') result = 'https://login.salesforce.com';
+    else if(orgType == 'sandbox' || orgType == '샌드박스') result = 'https://test.salesforce.com';
+    else if(orgType == 'SDO') result = 'https://login.salesforce.com';
+    else if(orgType == 'developer' || orgType == '데브') result = 'https://login.salesforce.com';
+    return result;
 }
-// 탭 열기 + 탭 그룹 지정 (background.js로 메시지 전송하여 popup이 닫혀도 동작)
-async function openTabWithGroup(url, orgName = null, tabGroupEnabled = false, tabGroupColor = null, faviconColor = null) {
-    return new Promise((resolve) => {
-        chrome.runtime.sendMessage({
-            type: 'openTabWithGroup',
-            url: url,
-            useTabGroup: tabGroupEnabled && !!orgName,
-            groupName: orgName,
-            tabGroupColor: tabGroupColor || 'blue',
-            faviconColor: faviconColor
-        }, (response) => {
-            resolve(response || { success: true });
-        });
-    });
-}
-
 async function orgLinkClick(event){
-    // 이벤트 위임 호환: event.target에서 요소 찾기
-    const orgRow = event.target.closest('div.org-row');
+    console.log('[orgLinkClick] 함수 호출됨!', event);
+    const orgRow = event.currentTarget.closest('div.org-row');
     let spinner = null;
     try {
         event.preventDefault(); // 기본 이동 동작 막기
-        // 1. 이벤트 위임 호환: event.target에서 가장 가까운 section 찾기
-        const section = event.target.closest('section.slds-accordion__section');
+        console.log('[orgLinkClick] 이벤트 기본 동작 방지됨');
+        // 1. orgLink(=currentTarget)에서 가장 가까운 section 찾기
+        const section = event.currentTarget.closest('section.slds-accordion__section');
+        console.log('[orgLinkClick] section 찾음:', !!section);
         // 2. folderId 읽기
         const folderId = section ? section.dataset.folderId : null;
         const orgId = orgRow.dataset.orgId;
@@ -1579,42 +1225,29 @@ async function orgLinkClick(event){
             return;
         }
 
-        // 오그 이름 (탭 그룹용)
-        const orgName = targetOrg.Name;
-
         // spinner 표시
         spinner = document.createElement('div');
         spinner.className = 'org-row-spinner';
         spinner.innerHTML = '<div role="status" class="slds-spinner slds-spinner_small slds-spinner_brand"><span class="slds-assistive-text">로딩중</span><div class="slds-spinner__dot-a"></div><div class="slds-spinner__dot-b"></div></div>';
         orgRow.appendChild(spinner);
 
-        const faviconColor = targetOrg.FaviconColor || null;
-
-        // Security Token이 있으면 SOAP API 로그인 우선 시도
-        if (targetOrg.SecurityToken) {
-            const soapSession = await trySoapLogin(targetOrg);
-            if (soapSession) {
-                const frontdoorUrl = `${soapSession.instanceUrl}/secur/frontdoor.jsp?sid=${encodeURIComponent(soapSession.sessionId)}`;
-                await openTabWithGroup(frontdoorUrl, orgName, targetOrg.TabGroupEnabled, targetOrg.TabGroupColor, faviconColor);
-                return;
-            }
-            // SOAP 실패 시 form 기반 폴백
-            const url = `${targetOrg.URL}?${encode('folderId')}=${encodeURIComponent(encode(folderId))}&${encode('orgId')}=${encodeURIComponent(encode(orgId))}`;
-            await openTabWithGroup(url, orgName, targetOrg.TabGroupEnabled, targetOrg.TabGroupColor, faviconColor);
-            return;
-        }
-
-        // Security Token 없으면 기존 로직: 세션 쿠키 → form 기반
+        // 세션 쿠키 기반 로그인 우선 시도
         const session = await trySessionLogin(targetOrg);
         if (session) {
+            // 파비콘 처리: pendingFavicon 저장 (frontdoor.jsp 이후 Lightning 페이지에서 적용)
+            if (targetOrg.FaviconColor) {
+                chrome.storage.local.set({ pendingFavicon: { color: targetOrg.FaviconColor, timestamp: Date.now() } });
+            }
             const frontdoorUrl = `${session.instanceUrl}/secur/frontdoor.jsp?sid=${encodeURIComponent(session.sessionId)}`;
-            await openTabWithGroup(frontdoorUrl, orgName, targetOrg.TabGroupEnabled, targetOrg.TabGroupColor, faviconColor);
+            console.log('[오그 링크] 세션 기반 로그인:', frontdoorUrl);
+            window.open(frontdoorUrl, "_blank");
             return;
         }
 
         // 세션 없으면 기존 form 기반 로그인
-        const url = `${targetOrg.URL}?${encode('folderId')}=${encodeURIComponent(encode(folderId))}&${encode('orgId')}=${encodeURIComponent(encode(orgId))}`;
-        await openTabWithGroup(url, orgName, targetOrg.TabGroupEnabled, targetOrg.TabGroupColor, faviconColor);
+        const url = targetOrg.URL +'?' +encode('folderId')+'='+encodeURIComponent(encode(folderId))+'&'+encode('orgId') + '=' + encodeURIComponent(encode(orgId));
+        console.log('[오그 링크] form 기반 로그인:', url);
+        window.open(url, "_blank");
     } catch (error) {
         console.error('[오그 링크] 오류:', error);
         showToast('오그 링크를 열 수 없습니다.');
@@ -1639,9 +1272,9 @@ async function trySessionLogin(targetOrg) {
             chrome.cookies.getAll({ name: 'sid', domain: 'force.com' })
         ]);
         const allCookies = [...sfCookies, ...forceCookies];
+
         // 로그인 페이지 쿠키 제외 + 중복 제거
         const seen = new Set();
-
         const candidates = [];
         for (const cookie of allCookies) {
             const domain = cookie.domain.replace(/^\./, '');
@@ -1652,6 +1285,8 @@ async function trySessionLogin(targetOrg) {
         }
 
         if (candidates.length === 0) return null;
+
+        console.log(`[세션 로그인] ${candidates.length}개의 sid 쿠키 발견, 검증 시작`);
 
         // 전체 타임아웃 (5초)
         const overallTimeout = new Promise((resolve) => setTimeout(() => resolve(null), 5000));
@@ -1701,78 +1336,15 @@ async function trySessionLogin(targetOrg) {
             })()
         ]);
 
+        if (raceResult) {
+            console.log(`[세션 로그인] 유효한 세션 발견: ${raceResult.instanceUrl}`);
+        } else {
+            console.log('[세션 로그인] 유효한 세션 없음, form 기반 로그인으로 폴백');
+        }
+
         return raceResult;
     } catch (error) {
         console.error('[세션 로그인] 쿠키 기반 세션 확인 실패:', error);
-        return null;
-    }
-}
-
-// XML 특수문자 이스케이프
-function escapeXml(str) {
-    if (!str) return '';
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&apos;');
-}
-
-// SOAP API 로그인 시도
-async function trySoapLogin(targetOrg) {
-    // Security Token 없으면 null 반환
-    if (!targetOrg.SecurityToken) {
-        return null;
-    }
-
-    const loginUrl = targetOrg.URL || 'https://login.salesforce.com';
-    const soapEndpoint = `${loginUrl}/services/Soap/u/59.0`;
-
-    const soapBody = `<?xml version="1.0" encoding="utf-8"?>
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:partner.soap.sforce.com">
-  <soapenv:Body>
-    <urn:login>
-      <urn:username>${escapeXml(targetOrg.UserName)}</urn:username>
-      <urn:password>${escapeXml(targetOrg.Password)}${escapeXml(targetOrg.SecurityToken)}</urn:password>
-    </urn:login>
-  </soapenv:Body>
-</soapenv:Envelope>`;
-
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-        const response = await fetch(soapEndpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/xml; charset=utf-8',
-                'SOAPAction': 'login'
-            },
-            body: soapBody,
-            signal: controller.signal
-        });
-
-        clearTimeout(timeoutId);
-
-        const responseText = await response.text();
-        // sessionId 추출
-        const sessionIdMatch = responseText.match(/<sessionId>([^<]+)<\/sessionId>/);
-        // serverUrl에서 인스턴스 URL 추출
-        const serverUrlMatch = responseText.match(/<serverUrl>([^<]+)<\/serverUrl>/);
-
-        if (sessionIdMatch && serverUrlMatch) {
-            const sessionId = sessionIdMatch[1];
-            // serverUrl: https://na1.salesforce.com/services/Soap/u/59.0/00D... -> https://na1.salesforce.com
-            const serverUrl = serverUrlMatch[1];
-            const instanceUrl = serverUrl.replace(/\/services\/Soap\/.*$/, '');
-
-            return { sessionId, instanceUrl };
-        }
-
-        return null;
-
-    } catch (error) {
         return null;
     }
 }
@@ -1793,19 +1365,6 @@ function createSVG(classNames=[],styleObj={}, attributes={}){
         }
     }
     return dom;
-}
-function createInlineIconSVG(iconName, classNames=[], styleObj={}, attributes={}) {
-    const svg = createSVG(classNames, styleObj, attributes);
-    const viewBox = (iconName === 'delete') ? '0 0 52 52' : '0 0 520 520';
-    svg.setAttribute('viewBox', viewBox);
-    svg.setAttribute('xmlns', SVG_NS);
-    const pathData = ICON_PATHS[iconName];
-    if (pathData) {
-        const path = document.createElementNS(SVG_NS, 'path');
-        path.setAttribute('d', pathData);
-        svg.appendChild(path);
-    }
-    return svg;
 }
 function createUse(classNames=[],styleObj={}, attributes={},attributesNS={}){
     const dom = document.createElementNS(SVG_NS,'use');
@@ -1864,18 +1423,10 @@ function getStorage(keys) {
 
 function setStorage(keys,value) {
     return new Promise((resolve, reject) => {
-        // 저장할 데이터를 plain object로 변환 (클래스 인스턴스 직렬화 보장)
-        const dataToStore = JSON.parse(JSON.stringify(value));
-        chrome.storage.sync.set({[keys] : dataToStore}, (result) => {
+        chrome.storage.sync.set({[keys] : value}, (result) => {
             if (chrome.runtime.lastError) {
-                const error = chrome.runtime.lastError;
-                // 용량 초과 에러 감지
-                if (error.message && (error.message.includes('QUOTA') || error.message.includes('quota') || error.message.includes('exceeded'))) {
-                    showToast('저장 용량을 초과했습니다. 오그나 폴더의 개수를 줄이거나 설명을 줄여주세요.', 'error');
-                }
-                reject(error);
+                reject(chrome.runtime.lastError);
             } else {
-                StorageCache.update(keys, dataToStore); // 캐시 업데이트
                 resolve(result);
             }
         });
@@ -1887,7 +1438,6 @@ function deleteStorage(key){
             if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError);
             } else {
-                StorageCache.remove(key); // 캐시에서 제거
                 resolve(result);
             }
         });
@@ -1897,10 +1447,7 @@ function deleteStorageKeys(keys) {
     return new Promise((resolve, reject) => {
         chrome.storage.sync.remove(keys, () => {
             if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-            else {
-                StorageCache.remove(keys); // 캐시에서 제거
-                resolve();
-            }
+            else resolve();
         });
     });
 }
@@ -1912,8 +1459,7 @@ async function getOrgsByIds(orgIds) {
 async function getOrgById(orgId) {
     if (!orgId) return null;
     const data = await getStorage(orgId);
-    const org = data[orgId] || null;
-    return org;
+    return data[orgId] || null;
 }
 
 function generateRandomId(length) {
@@ -1926,7 +1472,7 @@ function generateRandomId(length) {
 // =====================
 // 설정 모달
 // =====================
-async function onClickOpenSettings() {
+function onClickOpenSettings() {
     const modal = document.querySelector('#settings-modal');
     const backdrop = document.querySelector('#settings-backdrop');
     modal.classList.remove('slds-hidden');
@@ -1948,8 +1494,8 @@ async function populateFolderSelect(currentFolderId) {
     const select = document.querySelector('#org-folder-select');
     if (!select) return;
     select.innerHTML = '';
-    const allData = Object.values(await StorageCache.getAll());
-    const folders = allData.filter(d => d && d.Id && d.Id.startsWith('fol_'));
+    const allData = Object.values(await getStorage(null));
+    const folders = allData.filter(d => d.Id && d.Id.startsWith('fol_'));
     folders.sort((a, b) => a.SortNumber - b.SortNumber);
     for (const folder of folders) {
         const option = document.createElement('option');
@@ -1964,8 +1510,8 @@ async function populateFolderSelect(currentFolderId) {
 // 데이터 내보내기
 // =====================
 async function onClickExport() {
-    const allData = await StorageCache.getAll();
-    const folders = Object.values(allData).filter(d => d && d.Id && d.Id.startsWith('fol_'));
+    const allData = await getStorage(null);
+    const folders = Object.values(allData).filter(d => d.Id && d.Id.startsWith('fol_'));
     folders.sort((a, b) => a.SortNumber - b.SortNumber);
 
     // 내보내기용: OrgIds → embedded ORGs 형식으로 변환 (호환성)
@@ -1973,6 +1519,14 @@ async function onClickExport() {
     for (const folder of folders) {
         const orgIds = folder.OrgIds || [];
         const orgs = orgIds.filter(id => allData[id]).map(id => JSON.parse(JSON.stringify(allData[id])));
+        for (const org of orgs) {
+            try {
+                org.Password = await decryptPassword(org.Password);
+            } catch (e) {
+                console.error('내보내기 중 비밀번호 복호화 실패:', org.Id, e);
+                org.Password = '';
+            }
+        }
         exportFolders.push({
             Id: folder.Id,
             Name: folder.Name,
@@ -1987,14 +1541,11 @@ async function onClickExport() {
         folders: exportFolders
     };
 
-    // XOR 난독화
-    const jsonStr = JSON.stringify(exportData);
-    const obfuscated = xorObfuscate(jsonStr);
-    const blob = new Blob([obfuscated], { type: 'application/octet-stream' });
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `OrgLink_backup_${new Date().toISOString().slice(0, 10)}.orglink`;
+    a.download = `OrgLink_backup_${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -2012,15 +1563,7 @@ async function onFileImport(event) {
 
     try {
         const text = await file.text();
-        let importData;
-        try {
-            // XOR 디코딩 시도 (새 형식)
-            const decoded = xorDeobfuscate(text);
-            importData = JSON.parse(decoded);
-        } catch {
-            // 실패 시 기존 JSON 파싱 (하위 호환성)
-            importData = JSON.parse(text);
-        }
+        const importData = JSON.parse(text);
 
         if (!importData.folders || !Array.isArray(importData.folders)) {
             showToast('유효하지 않은 파일 형식입니다.');
@@ -2035,17 +1578,15 @@ async function onFileImport(event) {
         }
 
         if (importData.folders.length > MAX_FOLDERS) {
-            showToast(`폴더 수가 최대 한도(${MAX_FOLDERS}개)를 초과합니다.`);
+            showToast('폴더 수가 최대 한도(' + MAX_FOLDERS + '개)를 초과합니다.');
             return;
         }
-        // 전체 오그 수 체크
-        let totalImportOrgs = 0;
         for (const folder of importData.folders) {
-            totalImportOrgs += (folder.ORGs || []).length;
-        }
-        if (totalImportOrgs > MAX_TOTAL_ORGS) {
-            showToast(`전체 오그 수가 최대 한도(${MAX_TOTAL_ORGS}개)를 초과합니다. (가져오기: ${totalImportOrgs}개)`);
-            return;
+            const orgCount = (folder.ORGs || []).length;
+            if (orgCount > MAX_ORGS_PER_FOLDER) {
+                showToast('"' + folder.Name + '" 폴더의 오그 수가 최대 한도(' + MAX_ORGS_PER_FOLDER + '개)를 초과합니다.');
+                return;
+            }
         }
 
         const confirmed = confirm(
@@ -2061,54 +1602,31 @@ async function onFileImport(event) {
             });
         });
 
-        // 캐시 무효화
-        StorageCache.invalidate();
-
-        // 배치 쓰기 (성능 최적화): 순차 쓰기 대신 단일 호출
-        const batchData = {};
-
+        // embedded 형식(ORGs 배열) → 분리 형식으로 저장
         for (const folder of importData.folders) {
             const orgIds = [];
             const orgs = folder.ORGs || [];
-
             for (const org of orgs) {
+                if (typeof org.Password === 'string' && org.Password !== '') {
+                    org.Password = await encryptPassword(org.Password);
+                }
                 org.FolderId = folder.Id;
-                batchData[org.Id] = org;
+                await setStorage(org.Id, org);
                 orgIds.push(org.Id);
             }
-
-            batchData[folder.Id] = {
+            await setStorage(folder.Id, {
                 Id: folder.Id,
                 Name: folder.Name,
                 SortNumber: folder.SortNumber,
                 OrgIds: orgIds
-            };
-        }
-
-        // 단일 배치 쓰기
-        await new Promise((resolve, reject) => {
-            chrome.storage.sync.set(batchData, () => {
-                if (chrome.runtime.lastError) {
-                    const error = chrome.runtime.lastError;
-                    if (error.message?.includes('QUOTA')) {
-                        showToast('저장 용량을 초과했습니다. 오그나 폴더의 개수를 줄이거나 설명을 줄여주세요.', 'error');
-                    }
-                    reject(error);
-                } else {
-                    resolve();
-                }
             });
-        });
-
-        // 캐시 업데이트
-        StorageCache._data = batchData;
-        StorageCache._lastFetch = Date.now();
+        }
 
         showToast('데이터를 성공적으로 가져왔습니다.', 'success');
         renderFolderList();
 
     } catch (e) {
-        showToast(`파일을 읽는 중 오류가 발생했습니다: ${e.message}`);
+        showToast('파일을 읽는 중 오류가 발생했습니다: ' + e.message);
     }
 }
 
@@ -2175,12 +1693,9 @@ function saveUIState() {
             orgTypeText: orgModal.querySelector('#org-type-value')?.textContent || '',
             userName: orgModal.querySelector('#org-username')?.value || '',
             password: orgModal.querySelector('#password')?.value || '',
-            securityToken: orgModal.querySelector('#security-token')?.value || '',
             description: orgModal.querySelector('#org-description')?.value || '',
             faviconColor: orgModal.querySelector('#org-favicon-color')?.value || '#0070d2',
-            selectedFolderId: document.querySelector('#org-folder-select')?.value || '',
-            tabGroupEnabled: document.querySelector('#tab-group-enabled')?.checked || false,
-            tabGroupColor: document.querySelector('#tab-group-color')?.value || 'blue'
+            selectedFolderId: document.querySelector('#org-folder-select')?.value || ''
         };
     } else if (folderModal && folderModal.classList.contains('slds-fade-in-open')) {
         state.activeModal = 'folder-modal';
@@ -2223,11 +1738,8 @@ async function restoreUIState() {
             sectionOrgModal.querySelector('#org-type-value').textContent = data.orgTypeText || data.orgType || '선택해주세요.';
             sectionOrgModal.querySelector('#org-username').value = data.userName;
             sectionOrgModal.querySelector('#password').value = data.password;
-            sectionOrgModal.querySelector('#security-token').value = data.securityToken || '';
             sectionOrgModal.querySelector('#org-description').value = data.description;
             setFaviconColor(data.faviconColor || '#0070d2');
-            setTabGroupEnabled(data.tabGroupEnabled || false);
-            setTabGroupColor(data.tabGroupColor || 'blue');
 
             await populateFolderSelect(data.selectedFolderId || data.folderId);
 
@@ -2387,6 +1899,7 @@ async function restoreUIState() {
     }
   
     function initLiveSearch() {
+    console.log('initLiveSearch run');
       const input = document.getElementById(INPUT_ID);
       if (!input) return;
       const run = debounce(() => filterAndRender(input.value), 150);

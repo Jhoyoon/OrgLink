@@ -9,9 +9,7 @@
 
 <body style="width : 500px;min-height : 600px;">
     <header class="slds-border_top slds-card header-bar">
-        <a href="https://github.com/Jhoyoon/OrgLink" target="_blank" rel="noopener noreferrer" title="GitHub에서 보기">
-            <img src="./../images/icon-128.png" width="50" height="50" style="cursor: pointer;" />
-        </a>
+        <img src="./../images/icon-128.png" width="50" height="50" />
         <div class="header-search">
             <select id="search-scope" class="slds-select" style="width:70px; flex-shrink:0; font-size:12px;">
                 <option value="all">전체</option>
@@ -23,14 +21,14 @@
         </div>
         <!-- 폴더 추가 -->
         <div id="header-folder-add" style="cursor: pointer;" title="폴더 추가">
-            <svg class="slds-button__icon header-icon" aria-hidden="true" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
-                <path d="M300 290h165c8 0 15-7 15-15v-30c0-8-7-15-15-15H300c-6 0-10-4-10-10V55c0-8-7-15-15-15h-30c-8 0-15 7-15 15v165c0 6-4 10-10 10H55c-8 0-15 7-15 15v30c0 8 7 15 15 15h165c6 0 10 4 10 10v165c0 8 7 15 15 15h30c8 0 15-7 15-15V300c0-6 4-10 10-10z"/>
+            <svg class="slds-button__icon header-icon" aria-hidden="true">
+                <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#add"></use>
             </svg>
         </div>
         <!-- 설정 -->
         <div id="header-settings" style="cursor: pointer;" title="설정">
-            <svg class="slds-button__icon header-icon" aria-hidden="true" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
-                <path d="M261 191c-39 0-70 31-70 70s31 70 70 70 70-31 70-70-31-70-70-70zm210 133l-37-31a195 195 0 000-68l37-31c12-10 16-28 8-42l-16-28a34 34 0 00-40-14l-46 17a168 168 0 00-59-34l-8-47c-3-16-17-25-33-25h-32c-16 0-30 9-33 25l-8 46a180 180 0 00-60 34l-46-17-11-2c-12 0-23 6-29 16l-16 28c-8 14-5 32 8 42l37 31a195 195 0 000 68l-37 31a34 34 0 00-8 42l16 28a34 34 0 0040 14l46-17c18 16 38 27 59 34l8 48a33 33 0 0033 27h32c16 0 30-12 33-28l8-48a170 170 0 0062-37l43 17 12 2c12 0 23-6 29-16l15-26c9-11 5-29-7-39zm-210 47c-61 0-110-49-110-110s49-110 110-110 110 49 110 110-49 110-110 110z"/>
+            <svg class="slds-button__icon header-icon" aria-hidden="true">
+                <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#settings"></use>
             </svg>
         </div>
     </header>
@@ -51,8 +49,8 @@
             aria-labelledby="modal-heading-01" class="slds-modal slds-hidden slds-modal_small">
             <div class="slds-modal__container">
                 <button class="slds-button slds-button_icon slds-modal__close" id="folder-edit-modal-x">
-                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M310 254l130-131c6-6 6-15 0-21l-20-21c-6-6-15-6-21 0L268 212a10 10 0 01-14 0L123 80c-6-6-15-6-21 0l-21 21c-6 6-6 15 0 21l131 131c4 4 4 10 0 14L80 399c-6 6-6 15 0 21l21 21c6 6 15 6 21 0l131-131a10 10 0 0114 0l131 131c6 6 15 6 21 0l21-21c6-6 6-15 0-21L310 268a10 10 0 010-14z"/>
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#close"></use>
                     </svg>
                     <span class="slds-assistive-text">Cancel and close</span>
                 </button>
@@ -80,8 +78,8 @@
             class="slds-modal slds-modal_small" hidden="true">
             <div class="slds-modal__container">
                 <button id="org-modal-x" class="slds-button slds-button_icon slds-modal__close">
-                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M310 254l130-131c6-6 6-15 0-21l-20-21c-6-6-15-6-21 0L268 212a10 10 0 01-14 0L123 80c-6-6-15-6-21 0l-21 21c-6 6-6 15 0 21l131 131c4 4 4 10 0 14L80 399c-6 6-6 15 0 21l21 21c6 6 15 6 21 0l131-131a10 10 0 0114 0l131 131c6 6 15 6 21 0l21-21c6-6 6-15 0-21L310 268a10 10 0 010-14z"/>
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#close"></use>
                     </svg>
                     <span class="slds-assistive-text">Cancel and close</span>
                 </button>
@@ -134,8 +132,9 @@
                                         <span
                                             class="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right">
                                             <svg class="slds-icon slds-icon slds-icon_x-small slds-icon-text-default"
-                                                aria-hidden="true" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M83 140h354c10 0 17 13 9 22L273 374c-6 8-19 8-25 0L73 162c-7-9-1-22 10-22z"/>
+                                                aria-hidden="true">
+                                                <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#down">
+                                                </use>
                                             </svg>
                                         </span>
                                     </div>
@@ -210,14 +209,6 @@
                             <input type="text" id="password" placeholder="비밀번호" required="" class="slds-input" maxlength="100" />
                         </div>
                     </div>
-                    <!-- Security Token -->
-                    <div class="slds-form-element" id="security-token-div">
-                        <label class="slds-form-element__label" for="security-token">Security Token</label>
-                        <div class="slds-form-element__control" id="security-token-form">
-                            <input type="text" id="security-token" placeholder="Security Token (선택사항)" class="slds-input" maxlength="100" />
-                        </div>
-                        <!-- <div class="slds-form-element__help" style="color: #706e6b; font-size: 12px;">입력 시 SOAP API로 로그인 (MFA 우회 가능)</div> -->
-                    </div>
                     <!-- Description -->
                     <div class="slds-form-element">
                         <label class="slds-form-element__label" for="text-input-id-47">
@@ -225,53 +216,6 @@
                         <div class="slds-form-element__control">
                             <textarea id="org-description" placeholder="설명" class="slds-textarea" rows="3" maxlength="1000"></textarea>
                         </div>
-                    </div>
-                    <!-- 고급 설정 아코디언 -->
-                    <div class="slds-accordion slds-m-top_small" id="advanced-settings-accordion">
-                        <section class="slds-accordion__section" id="advanced-settings-section">
-                            <div class="slds-accordion__summary">
-                                <h2 class="slds-accordion__summary-heading">
-                                    <button class="slds-button slds-button_reset slds-accordion__summary-action" id="advanced-settings-toggle" aria-expanded="false">
-                                        <svg class="slds-accordion__summary-action-icon slds-button__icon slds-button__icon_left" aria-hidden="true" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M476 178L271 385c-6 6-16 6-22 0L44 178c-6-6-6-16 0-22l22-22c6-6 16-6 22 0l161 163c6 6 16 6 22 0l161-163c6-6 16-6 22 0l22 22c5 7 5 16 0 22z"/>
-                                        </svg>
-                                        <span class="slds-accordion__summary-content">고급 설정</span>
-                                    </button>
-                                </h2>
-                            </div>
-                            <div class="slds-accordion__content" id="advanced-settings-content">
-                                <!-- 탭 그룹 기능 체크박스 -->
-                                <div class="slds-form-element">
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-checkbox">
-                                            <input type="checkbox" id="tab-group-enabled" />
-                                            <label class="slds-checkbox__label" for="tab-group-enabled">
-                                                <span class="slds-checkbox_faux"></span>
-                                                <span class="slds-form-element__label">탭 그룹 기능 사용</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Tab Group Color -->
-                                <div class="slds-form-element slds-m-top_small" id="tab-group-color-container">
-                                    <label class="slds-form-element__label">탭 그룹 색상</label>
-                                    <div class="slds-form-element__control">
-                                        <div id="tab-group-color-picker" class="tab-group-color-picker">
-                                            <button type="button" class="tab-group-color-btn" data-color="grey" style="background-color: #5f6368;" title="회색"></button>
-                                            <button type="button" class="tab-group-color-btn" data-color="blue" style="background-color: #1a73e8;" title="파랑"></button>
-                                            <button type="button" class="tab-group-color-btn" data-color="red" style="background-color: #d93025;" title="빨강"></button>
-                                            <button type="button" class="tab-group-color-btn" data-color="yellow" style="background-color: #f9ab00;" title="노랑"></button>
-                                            <button type="button" class="tab-group-color-btn" data-color="green" style="background-color: #188038;" title="초록"></button>
-                                            <button type="button" class="tab-group-color-btn" data-color="pink" style="background-color: #d01884;" title="분홍"></button>
-                                            <button type="button" class="tab-group-color-btn" data-color="purple" style="background-color: #a142f4;" title="보라"></button>
-                                            <button type="button" class="tab-group-color-btn" data-color="cyan" style="background-color: #007b83;" title="청록"></button>
-                                            <button type="button" class="tab-group-color-btn" data-color="orange" style="background-color: #fa903e;" title="주황"></button>
-                                        </div>
-                                        <input type="hidden" id="tab-group-color" value="blue" />
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
                     </div>
                 </div>
                 <div class="slds-modal__footer">
@@ -288,8 +232,8 @@
             aria-labelledby="modal-heading-01" class="slds-modal slds-hidden slds-modal_small">
             <div class="slds-modal__container">
                 <button class="slds-button slds-button_icon slds-modal__close" id="org-delete-x">
-                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M310 254l130-131c6-6 6-15 0-21l-20-21c-6-6-15-6-21 0L268 212a10 10 0 01-14 0L123 80c-6-6-15-6-21 0l-21 21c-6 6-6 15 0 21l131 131c4 4 4 10 0 14L80 399c-6 6-6 15 0 21l21 21c6 6 15 6 21 0l131-131a10 10 0 0114 0l131 131c6 6 15 6 21 0l21-21c6-6 6-15 0-21L310 268a10 10 0 010-14z"/>
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#close"></use>
                     </svg>
                     <span class="slds-assistive-text">Cancel and close</span>
                 </button>
@@ -308,8 +252,8 @@
             aria-labelledby="modal-heading-01" class="slds-modal slds-hidden slds-modal_small">
             <div class="slds-modal__container">
                 <button class="slds-button slds-button_icon slds-modal__close" id="folder-delete-x">
-                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M310 254l130-131c6-6 6-15 0-21l-20-21c-6-6-15-6-21 0L268 212a10 10 0 01-14 0L123 80c-6-6-15-6-21 0l-21 21c-6 6-6 15 0 21l131 131c4 4 4 10 0 14L80 399c-6 6-6 15 0 21l21 21c6 6 15 6 21 0l131-131a10 10 0 0114 0l131 131c6 6 15 6 21 0l21-21c6-6 6-15 0-21L310 268a10 10 0 010-14z"/>
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#close"></use>
                     </svg>
                     <span class="slds-assistive-text">Cancel and close</span>
                 </button>
@@ -331,8 +275,8 @@
             class="slds-modal slds-hidden slds-modal_small">
             <div class="slds-modal__container">
                 <button class="slds-button slds-button_icon slds-modal__close" id="settings-modal-x">
-                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M310 254l130-131c6-6 6-15 0-21l-20-21c-6-6-15-6-21 0L268 212a10 10 0 01-14 0L123 80c-6-6-15-6-21 0l-21 21c-6 6-6 15 0 21l131 131c4 4 4 10 0 14L80 399c-6 6-6 15 0 21l21 21c6 6 15 6 21 0l131-131a10 10 0 0114 0l131 131c6 6 15 6 21 0l21-21c6-6 6-15 0-21L310 268a10 10 0 010-14z"/>
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#close"></use>
                     </svg>
                     <span class="slds-assistive-text">닫기</span>
                 </button>
@@ -349,8 +293,8 @@
                                         <button class="slds-button slds-button_reset slds-accordion__summary-action"
                                             aria-expanded="true" id="settings-accordion-data">
                                             <svg class="slds-accordion__summary-action-icon slds-button__icon slds-button__icon_left"
-                                                aria-hidden="true" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M476 178L271 385c-6 6-16 6-22 0L44 178c-6-6-6-16 0-22l22-22c6-6 16-6 22 0l161 163c6 6 16 6 22 0l161-163c6-6 16-6 22 0l22 22c5 7 5 16 0 22z"/>
+                                                aria-hidden="true">
+                                                <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#switch"></use>
                                             </svg>
                                             <span class="slds-accordion__summary-content">데이터 관리</span>
                                         </button>
@@ -361,13 +305,13 @@
                                         <div class="slds-col slds-shrink-none slds-grow-none">
                                             <div class="slds-form-element__icon helptext-container">
                                                 <button class="slds-button slds-button_icon" aria-describedby="data-management-help">
-                                                    <svg class="slds-button__icon" aria-hidden="true" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M260 20a240 240 0 100 480 240 240 0 100-480zm0 121c17 0 30 13 30 30s-13 30-30 30-30-13-30-30 13-30 30-30zm50 210c0 5-4 9-10 9h-80c-5 0-10-3-10-9v-20c0-5 4-11 10-11 5 0 10-3 10-9v-40c0-5-4-11-10-11-5 0-10-3-10-9v-20c0-5 4-11 10-11h60c5 0 10 5 10 11v80c0 5 4 9 10 9 5 0 10 5 10 11z"/>
+                                                    <svg class="slds-button__icon" aria-hidden="true">
+                                                        <use xlink:href="./assets/icons/utility-sprite/svg/symbols.svg#info"></use>
                                                     </svg>
                                                     <span class="slds-assistive-text">도움말</span>
                                                 </button>
                                                 <div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left helptext-tooltip" role="tooltip" id="data-management-help">
-                                                    <div class="slds-popover__body">모든 폴더와 오그 데이터를 난독화된 파일로 내보내거나 가져올 수 있습니다.</div>
+                                                    <div class="slds-popover__body">모든 폴더와 오그 데이터를 JSON 파일로 내보내거나 가져올 수 있습니다.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -378,13 +322,25 @@
                                         <div class="slds-col">
                                             <button class="slds-button slds-button_neutral slds-button_stretch" id="btn-import"
                                                 title="데이터 가져오기">가져오기</button>
-                                            <input type="file" id="import-file-input" accept=".json,.orglink" style="display:none;" />
+                                            <input type="file" id="import-file-input" accept=".json" style="display:none;" />
                                         </div>
                                     </div>
                                 </div>
                             </section>
                         </li>
                     </ul>
+                    <!-- GitHub 링크 -->
+                    <div class="slds-p-top_small" style="text-align: center;">
+                        <a href="https://github.com/Jhoyoon/OrgLink" target="_blank" rel="noopener noreferrer"
+                            class="slds-text-link" style="font-size: 13px;">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"
+                                style="vertical-align: middle; margin-right: 4px;">
+                                <path
+                                    d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+                            </svg>
+                            GitHub - Jhoyoon/OrgLink
+                        </a>
+                    </div>
                 </div>
                 <div class="slds-modal__footer">
                     <button id="settings-modal-close" class="slds-button slds-button_neutral">닫기</button>
@@ -401,6 +357,9 @@
     }
 </style>
 
+<script src="../crypto.js"></script>
 <script src="popup.js" type="module"></script>
+<!-- <script src="../tailwind.js" type="module"></script> -->
+<!-- <script src="../fontAwesome.js" type="module"></script> -->
 
 </html>

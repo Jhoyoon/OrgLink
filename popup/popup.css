@@ -1,3 +1,117 @@
+  /* 상단 바 스타일 */
+ .top-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-family: sans-serif;
+  }
+  .top-bar h2 {
+    margin: 0;
+    padding: 0 10px 0 0;
+    font-size: 18px;
+  }
+  .top-bar .folder-info {
+    font-size: 14px;
+    color: #555;
+    margin-right: 20px;
+  }
+  .top-bar .search-box {
+    margin-left: auto; /* 오른쪽 정렬 */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .top-bar .search-box input[type="text"] {
+    padding: 4px 8px;
+    font-size: 14px;
+  }
+  .top-bar .search-box button {
+    padding: 4px 8px;
+    cursor: pointer;
+  }
+
+  /* 테이블 스타일 */
+  table.login-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: sans-serif;
+    font-size: 14px;
+  }
+  table.login-table th, table.login-table td {
+    padding: 8px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  /* 아이콘 셀 스타일 (임의) */
+  .icon-cell {
+    width: 30px;
+    text-align: center;
+    color: #fff;
+    border-radius: 4px;
+  }
+  /* 색상 예시 */
+  .icon-cell.green {
+    background-color: #4caf50; /* 예: 녹색 */
+  }
+  .icon-cell.orange {
+    background-color: #ff9800;
+  }
+  .icon-cell.red {
+    background-color: #f44336;
+  }
+
+  /* 자물쇠 아이콘 셀 (빨간 사각형 대신) */
+  .lock-cell {
+    width: 30px;
+    text-align: center;
+    color: #f44336; /* 예: 빨간색 */
+  }
+  /* 검색 아이콘 셀 */
+  .search-cell {
+    width: 30px;
+    text-align: center;
+    color: #3f51b5; /* 예: 파란색 */
+  }
+
+  /* 즐겨찾기(별) 셀 */
+  .star-cell {
+    width: 30px;
+    text-align: center;
+    color: #FFD700; /* 금색 */
+    cursor: pointer;
+  }
+
+  /* 사용자/URL 칸 */
+  .user-info {
+    font-weight: bold;
+    display: block;
+  }
+  .user-url {
+    color: #007acc;
+    text-decoration: none;
+  }
+  .user-url:hover {
+    text-decoration: underline;
+  }
+
+  /* 우측 작업 아이콘 영역 */
+  .action-cell {
+    width: 50px;
+    text-align: right;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    color: #666;
+  }
+  .action-cell i {
+    cursor: pointer;
+  }
+  .action-cell i:hover {
+    color: #000;
+  }
+
   /* 설명 textarea */
   #org-description {
     resize: vertical;
@@ -97,13 +211,11 @@
 
   .org-action-icon {
     border-radius: 4px;
-    padding: 8px;
-    margin: -4px 0 -4px 2px;
+    padding: 4px;
     transition: background-color 0.15s;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
   }
 
   .org-action-icon:hover {
@@ -145,18 +257,6 @@
 
   .org-row {
     position: relative;
-    flex-wrap: nowrap;
-  }
-
-  .org-row .slds-size_9-of-12 {
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  .org-row .slds-size_9-of-12 p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .org-row:last-child {
@@ -184,24 +284,6 @@
 
   .slds-accordion__summary {
     border-radius: 12px 12px 0 0;
-  }
-
-  .slds-accordion__summary-heading {
-    min-width: 0;
-    flex: 1;
-    overflow: hidden;
-  }
-
-  .slds-accordion__summary-action {
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  .slds-accordion__summary-content {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .slds-accordion__section:not(.slds-is-open) .slds-accordion__summary {
@@ -254,67 +336,4 @@
   .helptext-container:hover .helptext-tooltip,
   .helptext-container button:focus + .helptext-tooltip {
     display: inline-block !important;
-  }
-
-  /* 탭 그룹 색상 선택기 */
-  .tab-group-color-picker {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    padding: 8px 0;
-  }
-
-  .tab-group-color-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: transform 0.15s, border-color 0.15s;
-  }
-
-  .tab-group-color-btn:hover {
-    transform: scale(1.15);
-  }
-
-  .tab-group-color-btn.selected {
-    border-color: #0070d2;
-    box-shadow: 0 0 0 2px rgba(0, 112, 210, 0.3);
-  }
-
-  /* 탭 그룹 색상 선택기 비활성화 상태 */
-  .tab-group-color-picker.disabled {
-    opacity: 0.4;
-    pointer-events: none;
-  }
-
-  .tab-group-color-picker.disabled .tab-group-color-btn {
-    cursor: not-allowed;
-  }
-
-  #tab-group-color-container.disabled {
-    opacity: 0.5;
-  }
-
-  /* 오그 모달 내 고급 설정 아코디언 */
-  #advanced-settings-accordion {
-    border: 1px solid #dddbda;
-    border-radius: 4px;
-  }
-
-  #advanced-settings-accordion .slds-accordion__section {
-    border: none;
-  }
-
-  #advanced-settings-accordion .slds-accordion__summary {
-    background: #f3f2f2;
-    border-radius: 4px;
-  }
-
-  #advanced-settings-accordion .slds-accordion__section.slds-is-open .slds-accordion__summary {
-    border-radius: 4px 4px 0 0;
-  }
-
-  #advanced-settings-accordion .slds-accordion__content {
-    padding: 12px;
   }
