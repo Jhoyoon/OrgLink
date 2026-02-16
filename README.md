@@ -25,10 +25,10 @@
 ---
 
 #### TODO
-- 아이콘 색깔 설정 버그 수정
-- 잔여 스토리지 용량 설정 모달에서 표시
-- 매인 화면에서 탭 - 파비콘 색깔 표시
-
+- 테스트 사용자 로그인 세션 분리
+  - 구현 가능한걸까
+- 언어 선택
+  - English, 한국어
 ## Privacy Policy
 This Chrome extension ("the Extension") is developed and published by hooon Jung.
 
