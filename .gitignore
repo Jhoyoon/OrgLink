@@ -1,2 +1,6 @@
 .popup/assets
 .CLAUDE.md
+.package.json
+.package-lock.json
+.claude
+.idea
